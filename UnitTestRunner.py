@@ -46,3 +46,6 @@ def UnitTestRunner():
     PivotScanUnitTest().main()
     HeapUnitTest().main()
     print('All unit tests passed')
+
+if __name__ == '__main__':
+    UnitTestRunner()
