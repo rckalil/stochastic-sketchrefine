@@ -33,13 +33,12 @@ import numpy as np
 
 
 if __name__ == '__main__':
-    warnings.filterwarnings('ignore')
-    
+    # warnings.filterwarnings('ignore')
+    '''
     st1 = time.time()
     scenarios = representative_sg = RepresentativeScenarioGenerator(
         relation='Stock_Investments_Half',
         base_predicate='partition_id=1',
-        attr="drift",
         duplicate_vector=[20],
         correlation_coeff=0.5
     ).generate_scenarios(seed=203545, no_of_scenarios=200)
@@ -48,13 +47,12 @@ if __name__ == '__main__':
     scenarios = representative_sg = RepresentativeScenarioGenerator(
         relation='Stock_Investments_Half',
         base_predicate='partition_id=1',
-        attr="price",
         duplicate_vector=[20],
         correlation_coeff=0.5
     ).generate_scenarios(seed=203545, no_of_scenarios=200, pid=1)
     print('Took', time.time() - st2, 'secs')
     print(scenarios[15][156])
-    
+    '''
 
     relation = 'Lineitem_6000000'
     count_query = 'SELECT COUNT(*) from ' + relation
@@ -89,21 +87,21 @@ if __name__ == '__main__':
                 result_dict[no_of_validation_scenarios] = np.mean(variances)
                 print('Mean Variance:', np.mean(variances))
             print(result_dict)
+        break
 
 
-
-    
+    '''
     sg1 = RepresentativeScenarioGeneratorWithoutCorrelation(
            relation='Stock_Investments_Half',
            attr='gain', base_predicate='partition_id=49085',
            duplicates=[5], scenario_generator=GainScenarioGenerator
     )
 
-    sg1 = RepresentativeScenarioGenerator(
-       relation='Stock_Investments_Half',
-       attr='gain', base_predicate='partition_id=49085',
-       duplicate_vector=[5], correlation_coeff=[-0.1]
-    )
+    #sg1 = RepresentativeScenarioGenerator(
+    #    relation='Stock_Investments_Half',
+    #    attr='gain', base_predicate='partition_id=49085',
+    #    duplicate_vector=[5], correlation_coeff=[-0.1]
+    #)
     
     scenarios = sg1.generate_scenarios(
         seed=Hyperparameters.INIT_SEED,
@@ -147,8 +145,8 @@ if __name__ == '__main__':
         print('Avg, of Scenarios 5:', np.average(np.sort(scenarios_5)[:until]))
         print('Avg. of scenarios 6:', np.average(np.sort(scenarios_6)[:until]))
         until += 1000
-    
-    
+    '''
+    '''
     partitioner = DistPartition(
         relation='stock_investments_half',
         dbInfo=PortfolioInfo
@@ -163,7 +161,8 @@ if __name__ == '__main__':
     )
     partitioner.partition_relation()
     partitioner.get_metrics().log_performance()
-    
+    '''
+    '''
     iter = 0
     workload_directory = 'Workloads/PortfolioWorkload'
     for file in os.listdir(workload_directory):
@@ -181,8 +180,8 @@ if __name__ == '__main__':
                 print('Sketch package:', package_dict,
                     'Objective value:', objective_value)
             
-    
-    
+    '''
+    '''
                 hardness_evaluator =\
                     RCLSolveBasedHardness(
                         query=query, linear_relaxation=False,
@@ -198,7 +197,8 @@ if __name__ == '__main__':
                       hardness_evaluator.get_model_probability())
                 #rclSolve.solve()
                 #rclMetrics = rclSolve.get_metrics()
-
+    '''
+    '''
                 rcl = RCLSolve(
                     query=query, linear_relaxation=False,
                     dbInfo=TpchInfo,
@@ -213,7 +213,8 @@ if __name__ == '__main__':
                 print(file)
                 rclMetrics.log()
                 
-
+    '''
+    '''
             SeedManager.reinitialize_seed()
             start_time = time.time()
             summarySearch = SummarySearch(
@@ -225,7 +226,8 @@ if __name__ == '__main__':
             package, objective_value = summarySearch.solve()
             summarySearch.display_package(package)
             summarySearchMetrics = summarySearch.get_metrics()
-
+    '''
+    '''
             SeedManager.reinitialize_seed()
             lpSummarySearch = SummarySearch(
                 query=query, linear_relaxation=True,
@@ -235,9 +237,9 @@ if __name__ == '__main__':
                 approximation_bound=0.02)
             lpSummarySearch.solve()
             lpSearchMetrics = lpSummarySearch.get_metrics()
-
-    iter += 1
-    rclMetrics.log()
-    summarySearchMetrics.log()
-    # lpRclMetrics.log()
-    lpSearchMetrics.log()
+    '''
+    #iter += 1
+    #rclMetrics.log()
+    #summarySearchMetrics.log()
+    #lpRclMetrics.log()
+    #lpSearchMetrics.log()
