@@ -35,29 +35,14 @@ def get_cursor(conn):
 def execute_sql(cursor, sql):
     cursor.execute(sql)
 
-# TPCH_FILE = 'lineitem.tbl'
 PORTFOLIO_FILE = 'portfolio.csv'
 
-# TPCH_TABLE_NAME = 'Lineitem'
 PORTFOLIO_TABLE_NAME = 'Stock_Investments'
 
-# TPCH_TUPLE_VARIANT_SUBSTRING = ''
 PORTFOLIO_TUPLE_VARIANT_SUBSTRING = ''
 
-# TPCH_VARIANCE_VARIANT_SUBSTRING = 'Variance'
 PORTFOLIO_VARIANCE_VARIANT_SUBSTRING = 'Volatility'
-
-# TPCH_LAMBDA_VARIANT_SUBSTRING = 'Lambda'
 PORTFOLIO_LAMBDA_VARIANT_SUBSTRING = 'Volatility_Lambda'
-
-# TPCH_TUPLE_VARIATION_SUBSTRINGS = ['20000', '60000', '120000', 
-#                                   '300000', '450000', '600000',
-#                                   '1200000', '3000000', '4500000',
-#                                   '6000000']
-
-# TPCH_TUPLE_VARIATIONS = [20000, 60000, 120000, 300000, 450000, 
-#                         600000, 1200000, 3000000, 4500000,
-#                         6000000]
 
 PORTFOLIO_TUPLE_VARIATION_SUBSTRINGS = ['90', '45', '30', '15',
                                         '9', '3', '1', 'half']
@@ -65,54 +50,16 @@ PORTFOLIO_TUPLE_VARIATION_SUBSTRINGS = ['90', '45', '30', '15',
 PORTFOLIO_TUPLE_VARIATIONS = [90, 45, 30, 15,
                               9, 3, 1, 0.5]
 
-# TPCH_VARIANCE_VARIATION_SUBSTRINGS = ['1x', '2x', '5x', '8x',
-#                                       '10x', '13x', '17x', '20x']
-
-# TPCH_VARIANCE_VARIATIONS = [1, 2, 5, 8,
-#                             10, 13, 17, 20]
-
 PORTFOLIO_VARIANCE_VARIATION_SUBSTRINGS = ['1x', '2x', '5x', '8x',
                                            '10x', '13x', '17x', '20x']
 
 PORTFOLIO_VARIANCE_VARIATIONS = [1, 2, 5, 8, 10,
                                  13, 17, 20]
 
-# TPCH_LAMBDA_VARIATION_SUBSTRINGS = ['halfx', '1x', '2x', '3x',
-#                                     '4x', '5x']
-
-# TPCH_LAMBDA_VARIATIONS = [0.5, 1, 2, 3, 4, 5]
-
 PORTFOLIO_LAMBDA_VARIATION_SUBSTRINGS = ['halfx', '1x', '2x',
                                          '3x', '4x', '5x']
 
 PORTFOLIO_LAMBDA_VARIATIONS = [0.5, 1, 2, 3, 4, 5]
-
-# tpch_attributes = [
-#     'id',
-#     'orderkey',
-#     'partkey',
-#     'suppkey',
-#     'linenumber',
-#     'quantity',
-#     'quantity_mean',
-#     'quantity_variance',
-#     'quantity_variance_coeff',
-#     'price',
-#     'price_mean',
-#     'price_variance',
-#     'price_variance_coeff',
-#     'tax'
-# ]
-
-# lineitem_schema_index = {
-#     'orderkey' : 0,
-#     'partkey' : 1,
-#     'suppkey' : 2,
-#     'linenumber' : 3,
-#     'quantity' : 4,
-#     'price' : 5,
-#     'tax' : 7
-#  }
 
 portfolio_attributes = [
     'id',
@@ -125,10 +72,10 @@ portfolio_attributes = [
 ]
 
 portfolio_index = {
-    'ticker' : 1,
-    'price' : 2,
-    'volatility' : 3,
-    'drift' : 4
+    'ticker' : 0,
+    'price' : 1,
+    'volatility' : 2,
+    'drift' : 3
 }
 
 INIT_SEED = SeedSequence(2342123)
@@ -263,202 +210,10 @@ def create_portfolio_volatility_coeff_variant_datasets(
                 execute_sql(cursor, sql_command)
     print('Populated', table_name)
 
-# def create_lineitem_tuple_variant_datasets(
-#         no_of_tuples, total_tuples, cursor):
-#     row_numbers = [i for i in range(total_tuples)]
-#     table_name = TPCH_TABLE_NAME + '_' + str(no_of_tuples)
-#     rng.shuffle(row_numbers)
-#     selected_rows = [row_numbers[i]\
-#                       for i in range(no_of_tuples)]
-#     selected_rows.sort()
-#     row_number = 0
-#     rows_selected = 0
-#     next_selected_row = selected_rows[0]
-#     quantity_means = rng.normal(loc=0, scale=1, size=no_of_tuples)
-#     quantity_variances = rng.exponential(scale=0.5, size=no_of_tuples)
-#     price_means = rng.normal(loc=0, scale=1, size=no_of_tuples)
-#     price_variances = rng.exponential(scale=0.5, size=no_of_tuples)
-#     for line in open(TPCH_FILE, 'r').readlines():
-#         if row_number == next_selected_row:
-#             values = line.split("|")
-#             tuple = dict()
-#             for attribute in tpch_attributes:
-#                 if attribute == 'id':
-#                     tuple[attribute] = str(rows_selected)
-#                 if attribute in lineitem_schema_index:
-#                     tuple[attribute] = values[
-#                         lineitem_schema_index[
-#                             attribute]]
-#                 if attribute == 'quantity_mean':
-#                     tuple[attribute] = str(round(quantity_means[rows_selected], 6))
-#                 if attribute == 'quantity_variance':
-#                     tuple[attribute] = str(round(quantity_variances[rows_selected], 6))
-#                 if attribute == 'quantity_variance_coeff':
-#                     tuple[attribute] = str(1)
-#                 if attribute == 'price_mean':
-#                     tuple[attribute] = str(round(price_means[rows_selected], 6))
-#                 if attribute == 'price_variance':
-#                     tuple[attribute] = str(round(price_variances[rows_selected], 6))
-#                 if attribute == 'price_variance_coeff':
-#                     tuple[attribute] = str(1)
-#             values_string = ''
-#             for attribute in tuple:
-#                 if len(values_string) > 0:
-#                     values_string += ', '
-#                 values_string += tuple[attribute]
-#             sql_command = "INSERT INTO " + table_name + " VALUES (" + \
-#                 values_string + ");"
-#             execute_sql(cursor, sql_command)
-#             rows_selected += 1
-#             if rows_selected == len(selected_rows):
-#                 break
-#             next_selected_row = selected_rows[rows_selected]
-#         row_number += 1
-#     print('Populated', table_name)
-
-# def create_lineitem_variance_variant_datasets(
-#         variance_coefficient, variance_substring, total_tuples, cursor):
-#     no_of_tuples = 20000
-#     row_numbers = [i for i in range(total_tuples)]
-#     table_name = TPCH_TABLE_NAME + '_' + TPCH_VARIANCE_VARIANT_SUBSTRING + \
-#         '_' + variance_substring
-#     rng.shuffle(row_numbers)
-#     selected_rows = [row_numbers[i]\
-#                       for i in range(no_of_tuples)]
-#     selected_rows.sort()
-#     row_number = 0
-#     rows_selected = 0
-#     next_selected_row = selected_rows[0]
-#     quantity_means = rng.normal(loc=0, scale=1, size=no_of_tuples)
-#     quantity_variances = rng.exponential(scale=0.5, size=no_of_tuples)
-#     price_means = rng.normal(loc=0, scale=1, size=no_of_tuples)
-#     price_variances = rng.exponential(scale=0.5, size=no_of_tuples)
-#     for line in open(TPCH_FILE, 'r').readlines():
-#         if row_number == next_selected_row:
-#             values = line.split("|")
-#             tuple = dict()
-#             for attribute in tpch_attributes:
-#                 if attribute == 'id':
-#                     tuple['id'] = str(rows_selected)
-#                 if attribute in lineitem_schema_index:
-#                     tuple[attribute] = values[
-#                         lineitem_schema_index[
-#                             attribute]]
-#                 if attribute == 'quantity_mean':
-#                     tuple[attribute] = str(round(quantity_means[rows_selected], 6))
-#                 if attribute == 'quantity_variance':
-#                     tuple[attribute] = str(round(quantity_variances[rows_selected], 6))
-#                 if attribute == 'quantity_variance_coeff':
-#                     tuple[attribute] = str(variance_coefficient)
-#                 if attribute == 'price_mean':
-#                     tuple[attribute] = str(round(price_means[rows_selected], 6))
-#                 if attribute == 'price_variance':
-#                     tuple[attribute] = str(round(price_variances[rows_selected], 6))
-#                 if attribute == 'price_variance_coeff':
-#                     tuple[attribute] = str(variance_coefficient)
-#             values_string = ''
-#             for attribute in tuple:
-#                 if len(values_string) > 0:
-#                     values_string += ', '
-#                 values_string += tuple[attribute]
-#             sql_command = "INSERT INTO " + table_name + " VALUES (" + \
-#                 values_string + ");"
-#             execute_sql(cursor, sql_command)
-#             rows_selected += 1
-#             if rows_selected == len(selected_rows):
-#                 break
-#             next_selected_row = selected_rows[rows_selected]
-#         row_number += 1
-#     print('Populated', table_name)
-
-
-# def create_lineitem_lambda_variant_datasets(
-#         _lambda, lambda_string, cursor):
-#     total_tuples = 6000000
-#     no_of_tuples = total_tuples
-#     row_numbers = [i for i in range(total_tuples)]
-#     table_name = TPCH_TABLE_NAME + '_' + TPCH_LAMBDA_VARIANT_SUBSTRING + \
-#                 '_' + lambda_string
-    
-#     rng.shuffle(row_numbers)
-#     selected_rows = [row_numbers[i]\
-#                       for i in range(no_of_tuples)]
-#     selected_rows.sort()
-#     row_number = 0
-#     rows_selected = 0
-#     next_selected_row = selected_rows[0]
-#     quantity_means = rng.normal(loc=0, scale=1, size=no_of_tuples)
-#     quantity_variances = rng.exponential(scale=0.5, size=no_of_tuples)
-#     quantity_variance_coeffs = rng.exponential(scale=(1/_lambda), size=no_of_tuples)
-#     price_means = rng.normal(loc=0, scale=1, size=no_of_tuples)
-#     price_variances = rng.exponential(scale=0.5, size=no_of_tuples)
-#     price_variance_coeffs = rng.exponential(scale=(1/_lambda), size=no_of_tuples)
-    
-#     for line in open(TPCH_FILE, 'r').readlines():
-#         if row_number == next_selected_row:
-#             values = line.split("|")
-#             tuple = dict()
-#             for attribute in tpch_attributes:
-#                 if attribute == 'id':
-#                     tuple['id'] = str(rows_selected)
-#                 if attribute in lineitem_schema_index:
-#                     tuple[attribute] = values[
-#                         lineitem_schema_index[
-#                             attribute]]
-#                 if attribute == 'quantity_mean':
-#                     tuple[attribute] = str(round(quantity_means[rows_selected], 6))
-#                 if attribute == 'quantity_variance':
-#                     tuple[attribute] = str(round(quantity_variances[rows_selected], 6))
-#                 if attribute == 'quantity_variance_coeff':
-#                     tuple[attribute] = str(round(quantity_variance_coeffs[rows_selected], 6))
-#                 if attribute == 'price_mean':
-#                     tuple[attribute] = str(round(price_means[rows_selected], 6))
-#                 if attribute == 'price_variance':
-#                     tuple[attribute] = str(round(price_variances[rows_selected], 6))
-#                 if attribute == 'price_variance_coeff':
-#                     tuple[attribute] = str(round(price_variance_coeffs[rows_selected], 6))
-#             values_string = ''
-#             for attribute in tuple:
-#                 if len(values_string) > 0:
-#                     values_string += ', '
-#                 values_string += tuple[attribute]
-#             sql_command = "INSERT INTO " + table_name + " VALUES (" + \
-#                 values_string + ");"
-#             execute_sql(cursor, sql_command)
-#             rows_selected += 1
-#             if rows_selected == len(selected_rows):
-#                 break
-#             next_selected_row = selected_rows[rows_selected]
-#         row_number += 1
-#     print('Populated', table_name)
 
 
 conn = connect_to_database()
 cursor = get_cursor(conn)
-
-# for no_of_tuples in TPCH_TUPLE_VARIATIONS:
-#     create_lineitem_tuple_variant_datasets(
-#         no_of_tuples=no_of_tuples, total_tuples=6000000,
-#         cursor=cursor)
-# print('Populated lineitem relations with different number of tuples')
-
-# for _ in range(len(TPCH_VARIANCE_VARIATIONS)):
-#     create_lineitem_variance_variant_datasets(
-#         variance_coefficient=TPCH_VARIANCE_VARIATIONS[_],
-#         variance_substring=TPCH_VARIANCE_VARIATION_SUBSTRINGS[_],
-#         total_tuples=6000000,
-#         cursor=cursor)
-# print('Populated lineitem relations with different fixed variance coefficients')
-
-
-# for _ in range(len(TPCH_LAMBDA_VARIATIONS)):
-#     create_lineitem_lambda_variant_datasets(
-#         _lambda = TPCH_LAMBDA_VARIATIONS[_],
-#         lambda_string = TPCH_LAMBDA_VARIATION_SUBSTRINGS[_],
-#         cursor=cursor
-#     )
-
-# print('Populated lineitem relations with different variance coefficients')
 
 for _ in range(len(PORTFOLIO_TUPLE_VARIATIONS)):
     create_portfolio_tuple_variant_datasets(

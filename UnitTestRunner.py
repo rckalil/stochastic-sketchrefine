@@ -23,26 +23,36 @@ from ValueGenerator.ValueGeneratorUnitTest import ValueGeneratorUnitTest
 
 
 def UnitTestRunner():
-    RepeatConstraintUnitTest().main()
-    PackageSizeConstraintUnitTest().main()
-    DeterministicConstraintUnitTest().main()
-    ExpectedSumConstraintUnitTest().main()
-    VaRConstraintUnitTest().main()
-    CVaRConstraintUnitTest().main()
-    ObjectiveUnitTest().main()
-    ConstraintUnitTest().main()
-    UtilsUnitTest().main()
-    QueryUnitTest().main()
-    TransitionUnitTest().main()
-    StateUnitTest().main()
-    ParserUnitTest().main()
-    PgConnectionUnitTest().main()
-    ScenarioGeneratorUnitTest().main()
-    PriceScenarioGeneratorUnitTest().main()
-    QuantityScenarioGeneratorUnitTest().main()
-    GainScenarioGeneratorUnitTest().main()
-    ValueGeneratorUnitTest().main()
-    MeanAbsoluteDistanceUnitTest().main()
-    PivotScanUnitTest().main()
-    HeapUnitTest().main()
+    print('Running all unit tests...')
+    tests = [
+        ('RepeatConstraintUnitTest', RepeatConstraintUnitTest),
+        ('PackageSizeConstraintUnitTest', PackageSizeConstraintUnitTest),
+        ('DeterministicConstraintUnitTest', DeterministicConstraintUnitTest),
+        ('ExpectedSumConstraintUnitTest', ExpectedSumConstraintUnitTest),
+        ('VaRConstraintUnitTest', VaRConstraintUnitTest),
+        ('CVaRConstraintUnitTest', CVaRConstraintUnitTest),
+        ('ObjectiveUnitTest', ObjectiveUnitTest),
+        ('ConstraintUnitTest', ConstraintUnitTest),
+        ('UtilsUnitTest', UtilsUnitTest),
+        ('QueryUnitTest', QueryUnitTest),
+        ('TransitionUnitTest', TransitionUnitTest),
+        ('StateUnitTest', StateUnitTest),
+        ('ParserUnitTest', ParserUnitTest),
+        ('PgConnectionUnitTest', PgConnectionUnitTest),
+        ('ScenarioGeneratorUnitTest', ScenarioGeneratorUnitTest),
+        ('PriceScenarioGeneratorUnitTest', PriceScenarioGeneratorUnitTest),
+        ('QuantityScenarioGeneratorUnitTest', QuantityScenarioGeneratorUnitTest),
+        ('GainScenarioGeneratorUnitTest', GainScenarioGeneratorUnitTest),
+        ('ValueGeneratorUnitTest', ValueGeneratorUnitTest),
+        ('MeanAbsoluteDistanceUnitTest', MeanAbsoluteDistanceUnitTest),
+        ('PivotScanUnitTest', PivotScanUnitTest),
+        ('HeapUnitTest', HeapUnitTest),
+    ]
+    for idx, (name, test_cls) in enumerate(tests, 1):
+        print(f'Running test {idx}/{len(tests)}: {name}...')
+        test_cls().main()
+        print(f'{name} passed.')
     print('All unit tests passed')
+
+if __name__ == "__main__":
+    UnitTestRunner()

@@ -87,7 +87,7 @@ if __name__ == '__main__':
                 result_dict[no_of_validation_scenarios] = np.mean(variances)
                 print('Mean Variance:', np.mean(variances))
             print(result_dict)
-        break
+
 
 
     '''

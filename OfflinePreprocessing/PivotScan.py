@@ -116,6 +116,7 @@ class PivotScan:
         diameter_threshold = None) -> list[(float, int)]:
         
         ids.sort()
+        print('Performing pivot scan on', len(ids), 'tuples')
 
         first_id = ids[0]
         current_interval_start = first_id
