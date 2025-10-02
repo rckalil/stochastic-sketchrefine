@@ -34,61 +34,28 @@ import numpy as np
 
 if __name__ == '__main__':
     # warnings.filterwarnings('ignore')
-    '''
-    st1 = time.time()
+    
+    """st1 = time.time()
     scenarios = representative_sg = RepresentativeScenarioGenerator(
         relation='Stock_Investments_Half',
         base_predicate='partition_id=1',
         duplicate_vector=[20],
         correlation_coeff=0.5
     ).generate_scenarios(seed=203545, no_of_scenarios=200)
-    print('Took', time.time() - st1, 'secs')
+    print('Took', time.time() - st1, 'secs')"""
     st2 = time.time()
     scenarios = representative_sg = RepresentativeScenarioGenerator(
         relation='Stock_Investments_Half',
+        attr='price',
         base_predicate='partition_id=1',
         duplicate_vector=[20],
-        correlation_coeff=0.5
+        correlation_coeff=[0.5]
     ).generate_scenarios(seed=203545, no_of_scenarios=200, pid=1)
     print('Took', time.time() - st2, 'secs')
     print(scenarios[15][156])
-    '''
-
-    relation = 'Lineitem_6000000'
-    count_query = 'SELECT COUNT(*) from ' + relation
-    PgConnection.Execute(count_query)
-    no_of_tuples = PgConnection.Fetch()[0][0]
     
-    workload_directory = 'Workloads/PortfolioWorkload'
-    for file in os.listdir(workload_directory):
-        with open(workload_directory + '/' + file, 'r') as f:
-            query = Parser().parse(f.readlines())
-            validation_scenarios_list = [1000000]
-            result_dict = dict()
-            for no_of_validation_scenarios in validation_scenarios_list:
-                variances = []
-                for _ in range(30):
-                    tuples = [_ for _ in range(no_of_tuples)]
-                    np.random.shuffle(tuples)
-                    tuples = tuples[0:5]
-                    package_dict = dict()
-                    for tuple_id in tuples:
-                        package_dict[tuple_id] = 1
-                    objective_values = []
 
-                    for _ in range(30):
-                        validator = Validator(
-                            query=query, dbInfo=PortfolioInfo,
-                            no_of_validation_scenarios=no_of_validation_scenarios)
-                        objective_value = validator.get_validation_objective_value(package_dict)
-                        objective_values.append(objective_value)
-                    
-                    variances.append(np.var(objective_values))
-                result_dict[no_of_validation_scenarios] = np.mean(variances)
-                print('Mean Variance:', np.mean(variances))
-            print(result_dict)
-
-
+    
 
     '''
     sg1 = RepresentativeScenarioGeneratorWithoutCorrelation(
