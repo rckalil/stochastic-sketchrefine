@@ -142,9 +142,9 @@ if __name__ == '__main__':
         with open(
             workload_directory + '/' + file, 'r') as f:
             query = Parser().parse(f.readlines())
-            relations = ['stock_investments_half']
+            relations = ['stock_investments_15']
             
-            for relation in relations:
+            """for relation in relations:
                 query.set_relation(relation)
                 SeedManager.reinitialize_seed()
                 package_dict, objective_value =\
@@ -184,7 +184,7 @@ if __name__ == '__main__':
                 rcl.solve()
                 rclMetrics = rcl.get_metrics()
                 print(file)
-                rclMetrics.log()
+                rclMetrics.log()"""
                 
     
     
@@ -202,7 +202,7 @@ if __name__ == '__main__':
             print('Summary search took', time.time() - start_time, 'secs')
             summarySearchMetrics.log()
     
-            SeedManager.reinitialize_seed()
+            """SeedManager.reinitialize_seed()
             lpSummarySearch = SummarySearch(
                 query=query, linear_relaxation=True,
                 dbInfo=PortfolioInfo, init_no_of_scenarios=100,
@@ -210,7 +210,7 @@ if __name__ == '__main__':
                 no_of_validation_scenarios=1000000,
                 approximation_bound=0.02)
             lpSummarySearch.solve()
-            lpSearchMetrics = lpSummarySearch.get_metrics()
+            lpSearchMetrics = lpSummarySearch.get_metrics()"""
     
     #iter += 1
     #rclMetrics.log()
