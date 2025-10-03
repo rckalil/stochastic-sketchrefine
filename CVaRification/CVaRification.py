@@ -167,7 +167,7 @@ class CVaRification:
         elif inequality_sign == RelationalOperators.GREATER_THAN_OR_EQUAL_TO:
             gurobi_inequality = GRB.GREATER_EQUAL
         
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr([1]*self.__no_of_vars, self.__vars),
             gurobi_inequality, size_limit
         )
@@ -186,7 +186,7 @@ class CVaRification:
             gurobi_inequality = GRB.GREATER_EQUAL
         
         sum_limit = deterministic_constraint.get_sum_limit()
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr(self.__values[attribute], self.__vars),
             gurobi_inequality, sum_limit
         )
@@ -237,7 +237,7 @@ class CVaRification:
         
         sum_limit = expected_sum_constraint.get_sum_limit()
 
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr(coefficients, self.__vars),
             gurobi_inequality, sum_limit
         )
@@ -340,7 +340,7 @@ class CVaRification:
             RelationalOperators.GREATER_THAN_OR_EQUAL_TO:
             gurobi_inequality = GRB.GREATER_EQUAL        
 
-        grb_cvar_constraint = self.__model.addConstr(
+        grb_cvar_constraint = self.__model.addLConstr(
             gp.LinExpr(
                 self.__cached_coefficients[attr], self.__vars),
             gurobi_inequality, cvar_threshold

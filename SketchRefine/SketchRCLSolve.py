@@ -137,7 +137,7 @@ class SketchRCLSolve:
             self.__get_gurobi_inequality(
                 package_size_constraint.get_inequality_sign())
 
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr([1]*self.__no_of_vars, self.__vars),
             gurobi_inequality, size_limit
         )
@@ -146,17 +146,20 @@ class SketchRCLSolve:
     def __add_deterministic_constraint_to_model(
         self, deterministic_constraint: DeterministicConstraint
     ):
+        # print('Adding deterministic constraint', 
+        #       deterministic_constraint)
         attribute = deterministic_constraint.get_attribute_name()
         gurobi_inequality = \
             self.__get_gurobi_inequality(
                 deterministic_constraint.get_inequality_sign())
         sum_limit = deterministic_constraint.get_sum_limit()
+        # print('Inequality sign:', gurobi_inequality)
         
-        print('Sum limit for', attribute, ':', sum_limit)
-        print('Value of 5032:', self.__values[attribute][5032])
-        print('Value of 5033:', self.__values[attribute][5033])
-        print('Value of 5034:', self.__values[attribute][5034])
-        self.__model.addConstr(
+        # print('Sum limit for', attribute, ':', sum_limit)
+        # print('Value of 5032:', self.__values[attribute][5032])
+        # print('Value of 5033:', self.__values[attribute][5033])
+        # print('Value of 5034:', self.__values[attribute][5034])
+        self.__model.addLConstr(
             gp.LinExpr(self.__values[attribute], self.__vars),
             gurobi_inequality, sum_limit
         )
@@ -180,7 +183,7 @@ class SketchRCLSolve:
         expected_sum_limit = \
             expected_sum_constraint.get_sum_limit()
 
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr(coefficients, self.__vars),
             gurobi_inequality, expected_sum_limit
         )
@@ -246,7 +249,7 @@ class SketchRCLSolve:
         self.__risk_constraints.append(risk_constraint)
         self.__risk_to_lcvar_constraint_mapping[
             risk_constraint] = \
-                self.__model.addConstr(
+                self.__model.addLConstr(
                     gp.LinExpr(
                         coefficients, self.__vars),
                     gurobi_inequality,
@@ -295,10 +298,14 @@ class SketchRCLSolve:
         risk_constraint_index = 0
         for constraint in self.__query.get_constraints():
             if constraint.is_package_size_constraint():
+                # print('Adding package size constraint', 
+                    #   constraint)
                 self.__add_package_size_constraint_to_model(
                     constraint
                 )
             if constraint.is_deterministic_constraint():
+                # print('Adding deterministic constraint', 
+                    #   constraint)
                 self.__add_deterministic_constraint_to_model(
                     constraint
                 )

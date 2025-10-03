@@ -39,6 +39,7 @@ class RepresentativeScenarioGeneratorWithoutCorrelation(ScenarioGenerator):
             sql += ' AND ' + self.__base_predicate
 
         sql += ' ORDER BY partition_id;'
+        print(sql)
 
         PgConnection.Execute(sql)
         tuples = PgConnection.Fetch()

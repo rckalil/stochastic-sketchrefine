@@ -35,6 +35,7 @@ import numpy as np
 if __name__ == '__main__':
     # warnings.filterwarnings('ignore')
     
+    # Scenarios generation demo
     """st1 = time.time()
     scenarios = representative_sg = RepresentativeScenarioGenerator(
         relation='Stock_Investments_Half',
@@ -43,24 +44,29 @@ if __name__ == '__main__':
         correlation_coeff=0.5
     ).generate_scenarios(seed=203545, no_of_scenarios=200)
     print('Took', time.time() - st1, 'secs')"""
-    st2 = time.time()
-    scenarios = representative_sg = RepresentativeScenarioGenerator(
+    """st2 = time.time()
+    representative_sg = RepresentativeScenarioGenerator(
         relation='Stock_Investments_Half',
         attr='price',
         base_predicate='partition_id=1',
         duplicate_vector=[20],
         correlation_coeff=[0.5]
-    ).generate_scenarios(seed=203545, no_of_scenarios=200, pid=1)
+    )
+    scenarios = representative_sg.generate_scenarios(seed=Hyperparameters.INIT_SEED, no_of_scenarios=200, pid=1)
     print('Took', time.time() - st2, 'secs')
     print(scenarios[15][156])
+    print(scenarios[15])
+    # print(scenarios)
+    print(len(scenarios))
+    print(len(scenarios[0]))
     
 
     
 
-    '''
+    # Test scenario generation without correlation
     sg1 = RepresentativeScenarioGeneratorWithoutCorrelation(
            relation='Stock_Investments_Half',
-           attr='gain', base_predicate='partition_id=49085',
+           attr='gain', base_predicate='partition_id=1',
            duplicates=[5], scenario_generator=GainScenarioGenerator
     )
 
@@ -74,17 +80,24 @@ if __name__ == '__main__':
         seed=Hyperparameters.INIT_SEED,
         no_of_scenarios=100)
     
+    print(len(scenarios))
+    
+    print('Generated', len(scenarios[0]), 'scenarios for', len(scenarios), 'representative tuples')
+    
     scenarios_1 = scenarios[0]
     scenarios_2 = scenarios[1]
     scenarios_3 = scenarios[2]
     scenarios_4 = scenarios[3]
     scenarios_5 = scenarios[4]
     
+    # 
     sql = 'SELECT representative_tuple_id FROM ' +\
         Relation_Prefixes.REPRESENTATIVE_RELATION_PREFIX +\
-        "Stock_Investments_Half WHERE partition_id=49085 AND attribute='gain'"
+        "Stock_Investments_Half WHERE partition_id=1 AND attribute='gain'"
     PgConnection.Execute(sql)
-    tid = PgConnection.Fetch()[0][0]
+    result = PgConnection.Fetch()
+    print('Representative tuple ids:', result)
+    tid = result[0][0]
     print('tid:', tid)
 
     sg2 = GainScenarioGenerator(
@@ -112,27 +125,20 @@ if __name__ == '__main__':
         print('Avg, of Scenarios 5:', np.average(np.sort(scenarios_5)[:until]))
         print('Avg. of scenarios 6:', np.average(np.sort(scenarios_6)[:until]))
         until += 1000
-    '''
-    '''
+    
+    
     partitioner = DistPartition(
         relation='stock_investments_half',
         dbInfo=PortfolioInfo
     )
     partitioner.partition_relation()
-    partitioner.get_metrics().log_performance()
+    partitioner.get_metrics().log_performance()"""
     
     
-    partitioner = DistPartition(
-        relation='lineitem_6000000',
-        dbInfo=TpchInfo
-    )
-    partitioner.partition_relation()
-    partitioner.get_metrics().log_performance()
-    '''
-    '''
-    iter = 0
+    # iter = 0
     workload_directory = 'Workloads/PortfolioWorkload'
     for file in os.listdir(workload_directory):
+        print('Processing file', file)
         with open(
             workload_directory + '/' + file, 'r') as f:
             query = Parser().parse(f.readlines())
@@ -147,8 +153,8 @@ if __name__ == '__main__':
                 print('Sketch package:', package_dict,
                     'Objective value:', objective_value)
             
-    '''
-    '''
+    
+    
                 hardness_evaluator =\
                     RCLSolveBasedHardness(
                         query=query, linear_relaxation=False,
@@ -164,11 +170,11 @@ if __name__ == '__main__':
                       hardness_evaluator.get_model_probability())
                 #rclSolve.solve()
                 #rclMetrics = rclSolve.get_metrics()
-    '''
-    '''
+    
+    
                 rcl = RCLSolve(
                     query=query, linear_relaxation=False,
-                    dbInfo=TpchInfo,
+                    dbInfo=PortfolioInfo,
                     init_no_of_scenarios=100,
                     no_of_validation_scenarios=1000000,
                     approximation_bound=0.05,
@@ -180,8 +186,8 @@ if __name__ == '__main__':
                 print(file)
                 rclMetrics.log()
                 
-    '''
-    '''
+    
+    
             SeedManager.reinitialize_seed()
             start_time = time.time()
             summarySearch = SummarySearch(
@@ -193,8 +199,9 @@ if __name__ == '__main__':
             package, objective_value = summarySearch.solve()
             summarySearch.display_package(package)
             summarySearchMetrics = summarySearch.get_metrics()
-    '''
-    '''
+            print('Summary search took', time.time() - start_time, 'secs')
+            summarySearchMetrics.log()
+    
             SeedManager.reinitialize_seed()
             lpSummarySearch = SummarySearch(
                 query=query, linear_relaxation=True,
@@ -204,7 +211,7 @@ if __name__ == '__main__':
                 approximation_bound=0.02)
             lpSummarySearch.solve()
             lpSearchMetrics = lpSummarySearch.get_metrics()
-    '''
+    
     #iter += 1
     #rclMetrics.log()
     #summarySearchMetrics.log()

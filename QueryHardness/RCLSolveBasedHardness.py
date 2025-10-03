@@ -255,7 +255,7 @@ class RCLSolveBasedHardness:
             self.__get_gurobi_inequality(
                 package_size_constraint.get_inequality_sign())
 
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr([1]*self.__no_of_vars, self.__vars),
             gurobi_inequality, size_limit
         )
@@ -277,7 +277,7 @@ class RCLSolveBasedHardness:
             gurobi_inequality=gurobi_inequality,
             value=sum_limit)
         
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr(self.__values[attribute], self.__vars),
             gurobi_inequality, sum_limit
         )
@@ -376,7 +376,7 @@ class RCLSolveBasedHardness:
             value=expected_sum_limit
         )
 
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr(coefficients, self.__vars),
             gurobi_inequality, expected_sum_limit
         )
@@ -453,7 +453,7 @@ class RCLSolveBasedHardness:
         self.__risk_constraints.append(risk_constraint)
         self.__risk_to_lcvar_constraint_mapping[
             risk_constraint] = \
-                self.__model.addConstr(
+                self.__model.addLConstr(
                     gp.LinExpr(
                         coefficients, self.__vars),
                     gurobi_inequality,
@@ -1358,12 +1358,13 @@ class RCLSolveBasedHardness:
         unacceptable_diff = True
 
         while unacceptable_diff:
+            print('Number of scenarios:', no_of_scenarios)
             self.__model_setup(
                 no_of_scenarios=no_of_scenarios,
                 no_of_scenarios_to_consider=[],
                 probabilistically_constrained=False
             )
-
+            print('Model setup done')
             probabilistically_unconstrained_package = \
                 self.__get_package()
             print('Probabilistically unconstrained package:',

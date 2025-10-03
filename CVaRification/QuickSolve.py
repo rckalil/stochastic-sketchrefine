@@ -184,7 +184,7 @@ class QuickSolve:
             self.__get_gurobi_inequality(
                 package_size_constraint.get_inequality_sign())
 
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr([1]*self.__no_of_vars, self.__vars),
             gurobi_inequality, size_limit
         )
@@ -199,7 +199,7 @@ class QuickSolve:
                 deterministic_constraint.get_inequality_sign())
         sum_limit = deterministic_constraint.get_sum_limit()
         
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr(self.__values[attribute], self.__vars),
             gurobi_inequality, sum_limit
         )

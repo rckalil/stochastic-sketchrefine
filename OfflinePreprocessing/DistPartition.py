@@ -5,9 +5,23 @@ import random
 from numpy.random import SFC64, SeedSequence, Generator
 from scipy.stats.stats import pearsonr
 
+import sys
+import os
 
+# Determina o caminho para a raiz do projeto (dois níveis acima do script)
+# Se o script estiver em '.../OfflinePreprocessing/DistPartition.py',
+# '..' leva para 'OfflinePreprocessing', e '..' novamente leva para a raiz.
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, '..', '..'))
+
+# Adiciona a raiz do projeto ao sys.path
+if project_root not in sys.path:
+    project_root = project_root + '/' + 'stochastic-sketchrefine'
+    print('Adding project root to sys.path:', project_root)
+    sys.path.append(project_root)
 
 from DbInfo.DbInfo import DbInfo
+from DbInfo.PortfolioInfo import PortfolioInfo
 from Hyperparameters.Hyperparameters import Hyperparameters
 from OptimizationMetrics.OfflinePreprocessingMetrics import OfflinePreprocessingMetrics
 from PgConnection.PgConnection import PgConnection
@@ -994,3 +1008,34 @@ class DistPartition:
     
     def get_no_of_partitions(self):
         return self.__no_of_partitions
+    
+
+if __name__ == '__main__':
+    tables = [
+        'stock_investments_1',
+        'stock_investments_3',
+        'stock_investments_9',
+        'stock_investments_15',
+        'stock_investments_30',
+        'stock_investments_45',
+        'stock_investments_90',
+        'stock_investments_half'
+    ]
+
+
+    dbInfo = PortfolioInfo
+
+    for table in tables:
+        print('Partitioning', table)
+        relation = table
+        
+    
+        partitioner = DistPartition(
+            dbInfo=dbInfo,
+            relation=relation
+        )
+        
+        partitioner.partition_relation()
+        partitioner.get_metrics().log_performance()
+
+    print('Done all partitioning')

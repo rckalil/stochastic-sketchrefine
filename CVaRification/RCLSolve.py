@@ -208,7 +208,7 @@ class RCLSolve:
             self.__get_gurobi_inequality(
                 package_size_constraint.get_inequality_sign())
 
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr([1]*self.__no_of_vars, self.__vars),
             gurobi_inequality, size_limit
         )
@@ -223,7 +223,7 @@ class RCLSolve:
                 deterministic_constraint.get_inequality_sign())
         sum_limit = deterministic_constraint.get_sum_limit()
         
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr(self.__values[attribute], self.__vars),
             gurobi_inequality, sum_limit
         )
@@ -314,7 +314,7 @@ class RCLSolve:
         expected_sum_limit = \
             expected_sum_constraint.get_sum_limit()
 
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr(coefficients, self.__vars),
             gurobi_inequality, expected_sum_limit
         )
@@ -387,7 +387,7 @@ class RCLSolve:
         self.__risk_constraints.append(risk_constraint)
         self.__risk_to_lcvar_constraint_mapping[
             risk_constraint] = \
-                self.__model.addConstr(
+                self.__model.addLConstr(
                     gp.LinExpr(
                         coefficients, self.__vars),
                     gurobi_inequality,

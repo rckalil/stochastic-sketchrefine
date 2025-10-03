@@ -3,6 +3,7 @@ from Hyperparameters.Hyperparameters import Hyperparameters
 from ScenarioGenerator.ScenarioGenerator import ScenarioGenerator
 from ScenarioGenerator.TpchScenarioGenerators.PriceScenarioGenerator import PriceScenarioGenerator
 from ScenarioGenerator.TpchScenarioGenerators.QuantityScenarioGenerator import QuantityScenarioGenerator
+from ScenarioGenerator.PorfolioScenarioGenerator.GainScenarioGenerator import GainScenarioGenerator
 
 
 class TpchInfo(DbInfo):
@@ -23,6 +24,9 @@ class TpchInfo(DbInfo):
         
         if attribute == 'quantity':
             return QuantityScenarioGenerator
+        
+        if attribute == 'gain':
+            return GainScenarioGenerator
         
         raise Exception('Attribute Unknown')
     

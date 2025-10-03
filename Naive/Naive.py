@@ -145,7 +145,7 @@ class Naive:
         elif inequality_sign == RelationalOperators.GREATER_THAN_OR_EQUAL_TO:
             gurobi_inequality = GRB.GREATER_EQUAL
         
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr([1]*self.__no_of_vars, self.__vars),
             gurobi_inequality, size_limit
         )
@@ -163,7 +163,7 @@ class Naive:
             gurobi_inequality = GRB.GREATER_EQUAL
         
         sum_limit = deterministic_constraint.get_sum_limit()
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr(self.__values[attribute], self.__vars),
             gurobi_inequality, sum_limit
         )
@@ -215,7 +215,7 @@ class Naive:
         
         sum_limit = expected_sum_constraint.get_sum_limit()
 
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr(coefficients, self.__vars),
             gurobi_inequality, sum_limit
         )
@@ -264,7 +264,7 @@ class Naive:
             )
             indicators.append(indicator)
         
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr([1]*no_of_scenarios, indicators),
             GRB.GREATER_EQUAL,
             no_of_scenarios * \

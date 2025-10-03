@@ -163,7 +163,7 @@ class SummarySearch:
         elif inequality_sign == RelationalOperators.GREATER_THAN_OR_EQUAL_TO:
             gurobi_inequality = GRB.GREATER_EQUAL
         
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr([1]*self.__no_of_vars, self.__vars),
             gurobi_inequality, size_limit
         )
@@ -182,7 +182,7 @@ class SummarySearch:
             gurobi_inequality = GRB.GREATER_EQUAL
         
         sum_limit = deterministic_constraint.get_sum_limit()
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr(self.__values[attribute], self.__vars),
             gurobi_inequality, sum_limit
         )
@@ -233,7 +233,7 @@ class SummarySearch:
         
         sum_limit = expected_sum_constraint.get_sum_limit()
 
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr(coefficients, self.__vars),
             gurobi_inequality, sum_limit
         )
@@ -315,7 +315,7 @@ class SummarySearch:
                 no_of_summaries, alpha, previous_package
             )
         # print('Sum of indicators >=', len(indicators) * var_constraint.get_probability_threshold())
-        self.__model.addConstr(
+        self.__model.addLConstr(
             gp.LinExpr([1]*len(indicators), indicators),
             GRB.GREATER_EQUAL,
             len(indicators) * var_constraint.get_probability_threshold()
