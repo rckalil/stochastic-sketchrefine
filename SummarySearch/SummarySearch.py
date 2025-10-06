@@ -61,6 +61,8 @@ class SummarySearch:
         
         self.__vars = []
 
+        print('Number of tuples =', self.__no_of_vars)
+
         self.__current_number_of_scenarios = 0
         self.__scenarios = dict()
         for attr in self.__get_stochastic_attributes():
@@ -78,6 +80,8 @@ class SummarySearch:
             self.__values[attr] = []
             for value in values:
                 self.__values[attr].append(value[0])
+
+        print('Deterministic attributes:', self.__values.keys())
 
         self.__dbInfo = dbInfo
         self.__ids = []
@@ -798,6 +802,7 @@ class SummarySearch:
                     self.__metrics.end_execution(
                         validation_objective_value,
                         no_of_scenarios)
+                    print('Found a feasible package')
                     return (package, 
                             validation_objective_value)
                 else:
@@ -810,6 +815,7 @@ class SummarySearch:
                 #print('Increasing number of scenarios to',
                 #      no_of_scenarios)
         self.__metrics.end_execution(0)
+        print('Could not find a feasible package')
         return None
 
 

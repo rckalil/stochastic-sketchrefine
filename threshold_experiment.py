@@ -33,31 +33,46 @@ import numpy as np
 
 if __name__ == '__main__':
 
-    query = """
-        SELECT PACKAGE(*) AS P
-        FROM Stock_Investments_Half
-        SUCH THAT
-        SUM(Price) <= 500 AND
-        SUM(Gain) >= %s WITH PROBABILITY >= 0.95
-        MAXIMIZE EXPECTED SUM(Gain)
-    """
+    query_template = """
+SELECT PACKAGE(*) AS P
+FROM Stock_Investments_Half
+SUCH THAT SUM(Price) <= 500
+AND SUM(Gain) >= %s WITH PROBABILITY >= 0.95
+MAXIMIZE EXPECTED SUM(Gain)
+"""
+    query_template = ["SELECT PACKAGE(*) AS P\n",
+                      "FROM Stock_Investments_15\n",
+                      "SUCH THAT\n",
+                      "SUM(Price) <= 1500 AND\n",
+                      "SUM(Gain) >= %s WITH PROBABILITY >= 0.97\n",
+                      "MAXIMIZE EXPECTED SUM(Gain)"]
 
-    for gain_threshold in [300, 325, 350, 375, 400]:
+    SeedManager.reinitialize_seed()
+
+    for gain_threshold in range(1000, 2001, 50):
         print('Gain threshold:', gain_threshold)
-        query = query % gain_threshold
-        print(query)
+        formatted_query = query_template[4] % str(gain_threshold)
+        print('Formatted query:', formatted_query)
+        query_lines = query_template.copy()
+        query_lines[4] = formatted_query
 
-
-    # SeedManager.reinitialize_seed()
-    # start_time = time.time()
-    # summarySearch = SummarySearch(
-    #     query=query, linear_relaxation=False,
-    #     dbInfo=PortfolioInfo, init_no_of_scenarios=100,
-    #     init_no_of_summaries=1,
-    #     no_of_validation_scenarios=1000000,
-    #     approximation_bound=0.02)
-    # package, objective_value = summarySearch.solve()
-    # summarySearch.display_package(package)
-    # summarySearchMetrics = summarySearch.get_metrics()
-    # print('Summary search took', time.time() - start_time, 'secs')
-    # summarySearchMetrics.log()
+        start_time = time.time()
+        query = Parser().parse(query_lines)
+        print('Parsed query:', query)
+        summarySearch = SummarySearch(
+            query=query, linear_relaxation=False,
+            dbInfo=PortfolioInfo, init_no_of_scenarios=100,
+            init_no_of_summaries=1,
+            no_of_validation_scenarios=1000000,
+            approximation_bound=0.02)
+        package, objective_value = summarySearch.solve()
+        summarySearch.display_package(package)
+        summarySearchMetrics = summarySearch.get_metrics()
+        print('Summary search took', time.time() - start_time, 'secs')
+        summarySearchMetrics.log()
+        print('-----------------------------------')
+        end_time = time.time()
+        print('Total time for gain threshold', gain_threshold, 'is', end_time - start_time, 'secs')
+        print('===================================')
+        with open("tr.txt", "a") as f:
+            f.write(f"{gain_threshold},{end_time - start_time}\n")
