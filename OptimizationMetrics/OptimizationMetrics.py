@@ -8,7 +8,7 @@ class OptimizationMetrics:
         algorithm_name: str,
         linear_relaxation: bool,
     ) -> None:
-        print("Mandioca")
+        # print("Mandioca")
         self.__algorithm_name = \
             algorithm_name
         self.__linear_relaxation = \

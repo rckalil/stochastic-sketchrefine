@@ -7,7 +7,7 @@ class ValueGenerator:
     def __init__(self, relation,
                  base_predicate,
                  attribute):
-        print("Inhame")
+        # print("Inhame")
         self.__relation = relation
         self.__base_predicate = \
             base_predicate
@@ -15,7 +15,7 @@ class ValueGenerator:
             attribute
         
     def get_values(self):
-        print("Jiló")
+        # print("Jiló")
         sql_query = "SELECT " + \
             self.__attribute + \
             " FROM " + self.__relation

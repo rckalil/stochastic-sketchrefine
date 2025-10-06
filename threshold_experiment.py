@@ -41,10 +41,10 @@ if __name__ == '__main__':
                       "MAXIMIZE EXPECTED SUM(Gain)"]
 
     SeedManager.reinitialize_seed()
-    print("Arroz")
+    # print("Arroz")
 
     for gain_threshold in range(-200, 650, 50):
-        print("Berinjela")
+        # print("Berinjela")
         # print('Gain threshold:', gain_threshold)
         formatted_query = query_template[4] % str(gain_threshold)
         # print('Formatted query:', formatted_query)
@@ -58,11 +58,12 @@ if __name__ == '__main__':
             query=query, linear_relaxation=False,
             dbInfo=PortfolioInfo, init_no_of_scenarios=100,
             init_no_of_summaries=1,
-            no_of_validation_scenarios=10,
+            no_of_validation_scenarios=1000,
             approximation_bound=0.02)
-        print("Nabo")
+        # print("Nabo")
         package, objective_value = summarySearch.solve()
         summarySearch.display_package(package)
+        resultado = summarySearch.get_results(package)
         summarySearchMetrics = summarySearch.get_metrics()
         # print('Summary search took', time.time() - start_time, 'secs')
         summarySearchMetrics.log()
@@ -71,4 +72,4 @@ if __name__ == '__main__':
         # print('Total time for gain threshold', gain_threshold, 'is', end_time - start_time, 'secs')
         # print('===================================')
         with open("tr.txt", "a") as f:
-            f.write(f"{gain_threshold},{end_time - start_time}\n")
+            f.write(f"{gain_threshold},{end_time - start_time},{resultado}\n")

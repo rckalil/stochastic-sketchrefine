@@ -28,7 +28,7 @@ class SummarySearch:
                  init_no_of_summaries: int,
                  no_of_validation_scenarios: int,
                  approximation_bound: float):
-        print("Cebola")
+        # print("Cebola")
         self.__query = query
         self.__gurobi_env = gp.Env(
             params=GurobiLicense.OPTIONS)
@@ -63,7 +63,7 @@ class SummarySearch:
         self.__vars = []
 
         print('Number of tuples =', self.__no_of_vars)
-        print("Feijão")
+        # print("Feijão")
         self.__current_number_of_scenarios = 0
         self.__scenarios = dict()
         for attr in self.__get_stochastic_attributes():
@@ -73,7 +73,7 @@ class SummarySearch:
         
         self.__values = dict()
         for attr in self.__get_deterministic_attributes():
-            print("Hortelã")
+            # print("Hortelã")
             values = \
                 ValueGenerator(
                     relation=self.__query.get_relation(),
@@ -84,7 +84,7 @@ class SummarySearch:
                 self.__values[attr].append(value[0])
 
         print('Deterministic attributes:', self.__values.keys())
-        print("Kale")
+        # print("Kale")
         self.__dbInfo = dbInfo
         self.__ids = []
         ids = ValueGenerator(
@@ -94,13 +94,13 @@ class SummarySearch:
             ).get_values()
         for id in ids:
             self.__ids.append(id[0])
-        print("Lentilha")
+        # print("Lentilha")
         self.__metrics = OptimizationMetrics(
             'SummarySearch', self.__is_linear_relaxation)
 
 
     def __get_stochastic_attributes(self):
-        print("Gengibre")
+        # print("Gengibre")
         attributes = set()
         for constraint in self.__query.get_constraints():
             if constraint.is_expected_sum_constraint():
@@ -137,7 +137,7 @@ class SummarySearch:
     
     
     def __get_number_of_tuples(self):
-        print("Espinafre")
+        # print("Espinafre")
         sql_query = "SELECT COUNT(*) FROM " \
             + self.__query.get_relation()
         
@@ -535,7 +535,7 @@ class SummarySearch:
                 
     
     def __add_variables_to_model(self):
-        print("Quiabo")
+        # print("Quiabo")
         max_repetition = \
             self.__get_upper_bound_for_vars()
         type = GRB.INTEGER
@@ -567,7 +567,7 @@ class SummarySearch:
             no_of_summaries = 0,
             alpha = None,
             previous_package = None,):
-        print("Pimenta")
+        # print("Pimenta")
         self.__model = gp.Model(
             env=self.__gurobi_env)
         self.__add_variables_to_model()
@@ -579,7 +579,7 @@ class SummarySearch:
     
     
     def __get_package(self):
-        print("Salsa")
+        # print("Salsa")
         self.__metrics.start_optimizer()
         self.__model.optimize()
         self.__metrics.end_optimizer()
@@ -735,14 +735,14 @@ class SummarySearch:
                 
     
     def solve(self):
-        print("Orégano")
+        # print("Orégano")
         self.__metrics.start_execution()
         no_of_scenarios = self.__init_no_of_scenarios
         
         self.__model_setup(
             no_of_scenarios,
             probabilistically_constrained=False)
-        print("Rúcula")
+        # print("Rúcula")
         probabilistically_unconstrained_package = \
             self.__get_package()
         
@@ -753,14 +753,14 @@ class SummarySearch:
             self.__metrics.end_execution(
                 0, 0)
             return None
-        print("Tomilho")
+        # print("Tomilho")
         upper_bound = \
             self.__validator.get_validation_objective_value(
                 package_dict=probabilistically_unconstrained_package
             )
         print('Objective Upper Bound:', upper_bound)
         alpha_histories = []
-        print("Vagem")
+        # print("Vagem")
         if self.__validator.is_package_validation_feasible(
             probabilistically_unconstrained_package):
             # print('Probabilistically unconstrained package is feasible')
@@ -770,13 +770,13 @@ class SummarySearch:
                     #    package_dict=probabilistically_unconstrained_package,
                     #    var_constraint=constraint
                     #), 'of scenarios')
-            print("Zimbro")
+            # print("Zimbro")
             self.__metrics.end_execution(upper_bound, 0)
             return (probabilistically_unconstrained_package,
                     upper_bound)
 
         else:
-            print("Alface")
+            # print("Alface")
             #print('Probabilistically unconstrained package is infeasible')
             for constraint in self.__query.get_constraints():
                 if constraint.is_var_constraint():
@@ -844,6 +844,15 @@ class SummarySearch:
         for id in package_dict:
             attr = self.__get_attributes(id)
             print(attr, ',', package_dict[id])
+    
+    def get_results(self, package_dict):
+        if package_dict is None:
+            return None
+        results = []
+        for id in package_dict:
+            attr = self.__get_attributes(id)
+            results.append((attr[1], package_dict[id]))
+        return results
 
     def __del__(self):
         self.__model.close()
