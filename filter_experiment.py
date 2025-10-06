@@ -34,24 +34,21 @@ import numpy as np
 if __name__ == '__main__':
 
     query_template = ["SELECT PACKAGE(*) AS P\n",
-                      "FROM Stock_Investments_15\n",
+                      "FROM Filtered_%s\n",
                       "SUCH THAT\n",
                       "SUM(Price) <= 500 AND\n",
-                      "SUM(Gain) >= %s WITH PROBABILITY >= 0.97\n",
+                      "SUM(Gain) >= 350 WITH PROBABILITY >= 0.97\n",
                       "MAXIMIZE EXPECTED SUM(Gain)"]
 
     SeedManager.reinitialize_seed()
-    # print("Arroz")
 
-    for gain_threshold in range(400, 650, 50):
-        # print("Berinjela")
-        # print('Gain threshold:', gain_threshold)
-        formatted_query = query_template[4] % str(gain_threshold)
-        # print('Formatted query:', formatted_query)
+    for table in [5, 10, 25, 50, 75, 100]:
+        formatted_query = query_template[1] % str(table)
         query_lines = query_template.copy()
-        query_lines[4] = formatted_query
+        query_lines[1] = formatted_query
 
         start_time = time.time()
+        print("Query: ", query_lines)
         query = Parser().parse(query_lines)
         # print('Parsed query:', query)
         summarySearch = SummarySearch(
@@ -72,4 +69,4 @@ if __name__ == '__main__':
         # print('Total time for gain threshold', gain_threshold, 'is', end_time - start_time, 'secs')
         # print('===================================')
         with open("tr.txt", "a") as f:
-            f.write(f"{gain_threshold},{end_time - start_time},{resultado}\n")
+            f.write(f"{table},{end_time - start_time},{resultado}\n")

@@ -430,12 +430,14 @@ class SummarySearch:
     
     
     def __add_scenarios_if_necessary(self, no_of_scenarios):
+        print("Piracanjuba")
         if no_of_scenarios > self.__feasible_no_of_scenarios_to_store:
             return
 
         if self.__current_number_of_scenarios < \
             no_of_scenarios:
             for attr in self.__scenarios:
+                print("Piada")
                 new_scenarios = \
                     self.__dbInfo.get_variable_generator_function(
                         attr)(
@@ -455,6 +457,7 @@ class SummarySearch:
     def __add_constraints_to_model(
         self, no_of_scenarios, probabilistically_constrained,
         no_of_summaries, alpha, previous_package):
+        print("Paralelepípedo")
         if probabilistically_constrained:
             self.__add_scenarios_if_necessary(no_of_scenarios)
 
@@ -567,15 +570,18 @@ class SummarySearch:
             no_of_summaries = 0,
             alpha = None,
             previous_package = None,):
-        # print("Pimenta")
+        print("Pimenta")
         self.__model = gp.Model(
             env=self.__gurobi_env)
         self.__add_variables_to_model()
+        print("Pião")
         self.__add_constraints_to_model(
             no_of_scenarios, probabilistically_constrained,
             no_of_summaries, alpha, previous_package)
+        print("Pipa")
         self.__add_objective_to_model(
             self.__query.get_objective(), no_of_scenarios)
+        print("Pandeiro")
     
     
     def __get_package(self):
@@ -624,6 +630,7 @@ class SummarySearch:
     def __csa_solve(self, no_of_scenarios,
                     no_of_summaries, alpha_histories,
                     previous_package, upper_bound):
+        print("Artista")
         alphas = []
         history = []
         clean_history = []
@@ -636,8 +643,10 @@ class SummarySearch:
         best_feasible_package = previous_package
         best_objective_value = 0
         alpha_histories_copy = alpha_histories
+        print("Botânico")
 
         while True:
+            print("Carteiro")
             alphas = []
             no_of_scenarios_considered = []
             var_constraint_index = 0
@@ -678,6 +687,8 @@ class SummarySearch:
                 return (best_feasible_package, upper_bound)
             
             history.append((no_of_scenarios_considered, previous_package))
+
+            print("Dentista")
             
             self.__model_setup(
                 no_of_scenarios=no_of_scenarios,
@@ -687,10 +698,11 @@ class SummarySearch:
                 previous_package=previous_package
             )
             previous_package = self.__get_package()
+            print("Engenheiro")
             
             if self.__validator.is_package_validation_feasible(
                 previous_package):
-                
+                print("Faxineiro")
                 if self.__validator.is_package_1_pm_epsilon_approximate(
                     previous_package, self.__approximation_bound,
                     upper_bound):
@@ -709,6 +721,7 @@ class SummarySearch:
                         best_objective_value = objective_value
             
             else:
+                print("Geriatra")
                 objective_value = self.__validator.get_validation_objective_value(
                     previous_package
                 )
@@ -720,7 +733,7 @@ class SummarySearch:
                 elif objective_value > upper_bound:
                     ...
                     # upper_bound = objective_value
-
+            print("Historiador")
             var_constraint_index = 0
             for constraint in self.__query.get_constraints():
                 if constraint.is_var_constraint():
@@ -732,6 +745,7 @@ class SummarySearch:
                     )
                     #print('Appended', alpha_histories_copy[var_constraint_index][-1])
                     var_constraint_index += 1
+            print("Ilustrador")
                 
     
     def solve(self):
@@ -801,6 +815,9 @@ class SummarySearch:
                 upper_bound=upper_bound
             )
 
+            print('Package found:', package)
+            print('Upper bound:', upper_bound)
+
             if self.__validator.is_package_validation_feasible(package):
                 if self.__validator.is_package_1_pm_epsilon_approximate(
                     package, self.__approximation_bound, upper_bound):
@@ -816,13 +833,13 @@ class SummarySearch:
                             validation_objective_value)
                 else:
                     no_of_summaries += 1
-                    #print('Increasing number of summaries to',
-                    #      no_of_summaries)
+                    print('Increasing number of summaries to',
+                         no_of_summaries)
             
             else:
                 no_of_scenarios *= 2
-                #print('Increasing number of scenarios to',
-                #      no_of_scenarios)
+                print('Increasing number of scenarios to',
+                     no_of_scenarios)
         self.__metrics.end_execution(0, 0)
         print('Could not find a feasible package')
         return None, None
