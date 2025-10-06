@@ -34,7 +34,7 @@ import numpy as np
 if __name__ == '__main__':
 
     query_template = ["SELECT PACKAGE(*) AS P\n",
-                      "FROM Stock_Investments_15\n",
+                      "FROM Stock_Investments_9\n",
                       "SUCH THAT\n",
                       "SUM(Price) <= 500 AND\n",
                       "SUM(Gain) >= %s WITH PROBABILITY >= 0.97\n",
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     SeedManager.reinitialize_seed()
     # print("Arroz")
 
-    for gain_threshold in range(400, 650, 50):
+    for gain_threshold in range(-100, 850, 100):
         # print("Berinjela")
         # print('Gain threshold:', gain_threshold)
         formatted_query = query_template[4] % str(gain_threshold)
