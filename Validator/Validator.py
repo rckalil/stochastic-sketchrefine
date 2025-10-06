@@ -16,6 +16,7 @@ class Validator:
     def __init__(self,query: Query,
                  dbInfo: DbInfo,
                  no_of_validation_scenarios: int):
+        print("Dendê")
         self.__query = query
         self.__dbInfo = dbInfo
         self.__no_of_validation_scenarios = \
@@ -49,6 +50,7 @@ class Validator:
 
 
     def get_validation_objective_value(self, package_dict) -> float:
+        print("Urucum")
         if package_dict is None:
             if self.__query.get_objective().get_objective_type() == \
                 ObjectiveType.MAXIMIZATION:
@@ -250,6 +252,7 @@ class Validator:
     def is_package_validation_feasible(
         self, package_dict,
     ):
+        print("Xerém")
         if package_dict is None:
             return True
         
