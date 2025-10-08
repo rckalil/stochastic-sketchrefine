@@ -43,26 +43,8 @@ if __name__ == '__main__':
     SeedManager.reinitialize_seed()
 
     tables = [
-        'stock_investments_100',
-        'stock_investments_95',
-        'stock_investments_90',
-        'stock_investments_85',
-        'stock_investments_80',
-        'stock_investments_75',
-        'stock_investments_70',
-        'stock_investments_65',
-        'stock_investments_60',
-        'stock_investments_55',
-        'stock_investments_50',
-        'stock_investments_45',
-        'stock_investments_40',
-        'stock_investments_35',
-        'stock_investments_30',
-        'stock_investments_25',
-        'stock_investments_20',
-        'stock_investments_15',
-        'stock_investments_10',
-        'stock_investments_5'
+        'stock_investments_5',
+        'stock_investments_1'
     ]
 
 
@@ -72,79 +54,37 @@ if __name__ == '__main__':
     # )
 
     for table in tables:
-        print('Partitioning', table)
-        start_time = time.time()
-        relation = table
-        
-    
-        partitioner = DistPartition(
-            dbInfo=dbInfo,
-            relation=relation
-        )
-        
-        partitioner.partition_relation()
-        partitioner.get_metrics().log_performance()
-        end_time = time.time()
-        preprocessing_time = end_time - start_time
+        preprocessing_time = 0
         query_time = 0
-
-        print(
-            f"O pré-processamento de {table} levou {end_time - start_time}\n"
-        )
-
-        print("Running query")
-
-        formatted_query = query_template[1] % str(table)
-        query_lines = query_template.copy()
-        query_lines[1] = formatted_query
-
-        print("Query: ", query_lines)
-        start_time = time.time()
-        query = Parser().parse(query_lines)
-        # print('Parsed query:', query)
-        summarySearch = SummarySearch(
-            query=query, linear_relaxation=False,
-            dbInfo=PortfolioInfo, init_no_of_scenarios=100,
-            init_no_of_summaries=1,
-            no_of_validation_scenarios=100,
-            approximation_bound=0.02)
-        # print("Nabo")
-        package, objective_value = summarySearch.solve()
-        summarySearch.display_package(package)
-        resultado = summarySearch.get_results(package)
-        summarySearchMetrics = summarySearch.get_metrics()
-        # print('Summary search took', time.time() - start_time, 'secs')
-        summarySearchMetrics.log()
-        # print('-----------------------------------')
-        end_time = time.time()
-        # print('Total time for gain threshold', gain_threshold, 'is', end_time - start_time, 'secs')
-        # print('===================================')
-        query_time += end_time - start_time
-
-        #Quantidade de linhas
-        conn = PgConnection()
-        conn.Execute(f"SELECT COUNT(*) FROM {table};")
-        row_count = conn.Fetch()[0][0]
-        print(f"Table {table} has {row_count} rows.")
-        
-        with open("processamento.txt", "a") as f:
-            f.write(f"{table},{query_time},{preprocessing_time},{query_time+preprocessing_time},{row_count}\n")
-
-
-    print('Done all partitioning')
-
-
-
-    for table in [600, 700, 800, 900, 1000]:
-        formatted_query = query_template[1] % str(table)
-        query_lines = query_template.copy()
-        query_lines[1] = formatted_query
-        total_time = 0
-        times = 1
-
-        for i in range(times):
+        times = 10
+        for i in range(10):
+            print('Partitioning', table)
             start_time = time.time()
+            relation = table
+            
+        
+            partitioner = DistPartition(
+                dbInfo=dbInfo,
+                relation=relation
+            )
+            
+            partitioner.partition_relation()
+            partitioner.get_metrics().log_performance()
+            end_time = time.time()
+            preprocessing_time += end_time - start_time
+
+            print(
+                f"O pré-processamento de {table} levou {preprocessing_time}\n"
+            )
+
+            print("Running query")
+
+            formatted_query = query_template[1] % str(table)
+            query_lines = query_template.copy()
+            query_lines[1] = formatted_query
+
             print("Query: ", query_lines)
+            start_time = time.time()
             query = Parser().parse(query_lines)
             # print('Parsed query:', query)
             summarySearch = SummarySearch(
@@ -164,6 +104,19 @@ if __name__ == '__main__':
             end_time = time.time()
             # print('Total time for gain threshold', gain_threshold, 'is', end_time - start_time, 'secs')
             # print('===================================')
-            total_time += end_time - start_time
-        with open("tr.txt", "a") as f:
-            f.write(f"{table},{total_time/times}\n")
+            query_time += end_time - start_time
+
+        #Quantidade de linhas
+        conn = PgConnection()
+        conn.Execute(f"SELECT COUNT(*) FROM {table};")
+        row_count = conn.Fetch()[0][0]
+        print(f"Table {table} has {row_count} rows.")
+        
+        with open("processamento.txt", "a") as f:
+            f.write(f"{table},{preprocessing_time/10},{query_time/10},{(query_time+preprocessing_time)/10},{row_count}\n")
+
+
+
+
+
+    

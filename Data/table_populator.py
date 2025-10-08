@@ -44,13 +44,9 @@ PORTFOLIO_TUPLE_VARIANT_SUBSTRING = ''
 PORTFOLIO_VARIANCE_VARIANT_SUBSTRING = 'Volatility'
 PORTFOLIO_LAMBDA_VARIANT_SUBSTRING = 'Volatility_Lambda'
 
-PORTFOLIO_TUPLE_VARIATION_SUBSTRINGS = ['100', '95', '90', '85', '80', '75', '70', 
-                              '65', '60', '55', '50', '45', '40', '35',
-                              '30', '25', '20', '15', '10', '5']
+PORTFOLIO_TUPLE_VARIATION_SUBSTRINGS = ['1']
 
-PORTFOLIO_TUPLE_VARIATIONS = [100, 95, 90, 85, 80, 75, 70, 
-                              65, 60, 55, 50, 45, 40, 35,
-                              30, 25, 20, 15, 10, 5]
+PORTFOLIO_TUPLE_VARIATIONS = [1]
 
 portfolio_attributes = [
     'id',
