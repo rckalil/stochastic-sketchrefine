@@ -54,4 +54,3 @@ class PgConnection:
         if PgConnection.CONNECTION is None:
             return Exception()
         PgConnection.CONNECTION.commit()
-

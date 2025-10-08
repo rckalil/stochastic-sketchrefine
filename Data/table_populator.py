@@ -44,22 +44,13 @@ PORTFOLIO_TUPLE_VARIANT_SUBSTRING = ''
 PORTFOLIO_VARIANCE_VARIANT_SUBSTRING = 'Volatility'
 PORTFOLIO_LAMBDA_VARIANT_SUBSTRING = 'Volatility_Lambda'
 
-PORTFOLIO_TUPLE_VARIATION_SUBSTRINGS = ['90', '45', '30', '15',
-                                        '9', '3', '1', 'half']
+PORTFOLIO_TUPLE_VARIATION_SUBSTRINGS = ['100', '95', '90', '85', '80', '75', '70', 
+                              '65', '60', '55', '50', '45', '40', '35',
+                              '30', '25', '20', '15', '10', '5']
 
-PORTFOLIO_TUPLE_VARIATIONS = [90, 45, 30, 15,
-                              9, 3, 1, 0.5]
-
-PORTFOLIO_VARIANCE_VARIATION_SUBSTRINGS = ['1x', '2x', '5x', '8x',
-                                           '10x', '13x', '17x', '20x']
-
-PORTFOLIO_VARIANCE_VARIATIONS = [1, 2, 5, 8, 10,
-                                 13, 17, 20]
-
-PORTFOLIO_LAMBDA_VARIATION_SUBSTRINGS = ['halfx', '1x', '2x',
-                                         '3x', '4x', '5x']
-
-PORTFOLIO_LAMBDA_VARIATIONS = [0.5, 1, 2, 3, 4, 5]
+PORTFOLIO_TUPLE_VARIATIONS = [100, 95, 90, 85, 80, 75, 70, 
+                              65, 60, 55, 50, 45, 40, 35,
+                              30, 25, 20, 15, 10, 5]
 
 portfolio_attributes = [
     'id',
@@ -224,24 +215,7 @@ for _ in range(len(PORTFOLIO_TUPLE_VARIATIONS)):
 
 print('Populated portfolio relations with different number of tuples')
 
-for _ in range(len(PORTFOLIO_VARIANCE_VARIATIONS)):
-    create_portfolio_volatility_variant_datasets(
-        PORTFOLIO_VARIANCE_VARIATIONS[_],
-        PORTFOLIO_VARIANCE_VARIATION_SUBSTRINGS[_],
-        cursor
-    )
 
-print('Populated portfolio relations with different volatilities')
-
-
-for _ in range(len(PORTFOLIO_LAMBDA_VARIATIONS)):
-    create_portfolio_volatility_coeff_variant_datasets(
-        PORTFOLIO_LAMBDA_VARIATIONS[_],
-        PORTFOLIO_LAMBDA_VARIATION_SUBSTRINGS[_],
-        cursor
-    )
-
-print('Populated portfolio relations with different scale factor for volatility coefficients')
 
 conn.commit()
 cursor.close()

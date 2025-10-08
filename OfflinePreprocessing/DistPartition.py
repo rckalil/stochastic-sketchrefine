@@ -1024,9 +1024,13 @@ if __name__ == '__main__':
 
 
     dbInfo = PortfolioInfo
+    open("partition_times.txt", "w").write(
+        "table,no_of_partitions,time\n"
+    )
 
     for table in tables:
         print('Partitioning', table)
+        start_time = time.time()
         relation = table
         
     
@@ -1037,5 +1041,10 @@ if __name__ == '__main__':
         
         partitioner.partition_relation()
         partitioner.get_metrics().log_performance()
+        end_time = time.time()
+
+        open("partition_times.txt", "a").write(
+            f"{table},{partitioner.get_no_of_partitions()},{end_time - start_time}\n"
+        )
 
     print('Done all partitioning')

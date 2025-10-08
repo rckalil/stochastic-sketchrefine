@@ -430,14 +430,14 @@ class SummarySearch:
     
     
     def __add_scenarios_if_necessary(self, no_of_scenarios):
-        print("Piracanjuba")
+        # print("Piracanjuba")
         if no_of_scenarios > self.__feasible_no_of_scenarios_to_store:
             return
 
         if self.__current_number_of_scenarios < \
             no_of_scenarios:
             for attr in self.__scenarios:
-                print("Piada")
+                # print("Piada")
                 new_scenarios = \
                     self.__dbInfo.get_variable_generator_function(
                         attr)(
@@ -457,7 +457,7 @@ class SummarySearch:
     def __add_constraints_to_model(
         self, no_of_scenarios, probabilistically_constrained,
         no_of_summaries, alpha, previous_package):
-        print("Paralelepípedo")
+        # print("Paralelepípedo")
         if probabilistically_constrained:
             self.__add_scenarios_if_necessary(no_of_scenarios)
 
@@ -570,15 +570,15 @@ class SummarySearch:
             no_of_summaries = 0,
             alpha = None,
             previous_package = None,):
-        print("Pimenta")
+        # print("Pimenta")
         self.__model = gp.Model(
             env=self.__gurobi_env)
         self.__add_variables_to_model()
-        print("Pião")
+        # print("Pião")
         self.__add_constraints_to_model(
             no_of_scenarios, probabilistically_constrained,
             no_of_summaries, alpha, previous_package)
-        print("Pipa")
+        # print("Pipa")
         self.__add_objective_to_model(
             self.__query.get_objective(), no_of_scenarios)
         print("Pandeiro")
