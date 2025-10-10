@@ -1480,3 +1480,12 @@ class RCLSolve:
 
     def get_metrics(self) -> OptimizationMetrics:
         return self.__metrics
+    
+    def get_results(self, package_dict):
+        if package_dict is None:
+            return None
+        results = []
+        for id in package_dict:
+            attr = self.__get_attributes(id)
+            results.append((attr[1], package_dict[id]))
+        return results
