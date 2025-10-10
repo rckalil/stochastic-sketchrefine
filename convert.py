@@ -1,4 +1,5 @@
 import csv
+import pandas as pd
 
 input_file = 'processamento.txt'
 output_file = 'tabela_processamento.csv'
@@ -23,3 +24,4 @@ with open(output_file, 'w', newline='', encoding='utf-8') as f:
     writer.writerows(rows)
 
 print(f'Tabela exportada para {output_file}')
+
