@@ -43,7 +43,7 @@ if __name__ == '__main__':
     SeedManager.reinitialize_seed()
     # print("Arroz")
 
-    for gain_threshold in range(0, 150, 100):
+    for gain_threshold in range(500, 550, 100):
         print("Berinjela")
         print('Gain threshold:', gain_threshold)
         formatted_query = query_template[4] % str(gain_threshold)
@@ -53,7 +53,7 @@ if __name__ == '__main__':
         query = Parser().parse(query_lines)
         print('Parsed query:', query)
 
-        """start_time = time.time()
+        start_time = time.time()
         summarySearch = SummarySearch(
             query=query, linear_relaxation=False,
             dbInfo=PortfolioInfo, init_no_of_scenarios=1000,
@@ -72,7 +72,7 @@ if __name__ == '__main__':
         # print('Total time for gain threshold', gain_threshold, 'is', end_time - start_time, 'secs')
         # print('===================================')
         with open("tr.txt", "a") as f:
-            f.write(f"{gain_threshold},{end_time - start_time},{resultado}\n")"""
+            f.write(f"{gain_threshold},{end_time - start_time},{resultado}\n")
 
         start_time = time.time()
         rclsolve = RCLSolve(
