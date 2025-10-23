@@ -274,6 +274,7 @@ class RCLSolve:
         no_of_scenarios: int
     ):
         attr = expected_sum_constraint.get_attribute_name()
+        print("Adding expected sum constraint: ", attr)
         coefficients = []
 
         if no_of_scenarios <= \
@@ -482,8 +483,12 @@ class RCLSolve:
         self, objective: Objective,
         no_of_scenarios: int):
 
+        print("Watching objective addition")
         attr = objective.get_attribute_name()
+        print("Objective attribute: ", attr)
         coefficients = []
+
+        print("Objective stochasticity: ", objective.get_stochasticity())
 
         if objective.get_stochasticity() == \
             Stochasticity.DETERMINISTIC:
@@ -587,14 +592,15 @@ class RCLSolve:
         if package_with_indices is None:
             return 0
         attr = self.__query.get_objective().get_attribute_name()
+        print('Calculating objective value for attribute:', attr)
         if no_of_scenarios < \
             self.__feasible_no_of_scenarios_to_store:
             sum = 0
             for idx in package_with_indices:
                 sum += np.average(self.__scenarios[attr][idx]) * \
                     package_with_indices[idx]
-                #print('Index in package:', idx)
-                #print('Avg. Value:', np.average(self.__scenarios[attr][idx]))
+                print('Index in package:', idx)
+                print('Avg. Value:', np.average(self.__scenarios[attr][idx]))
             return sum
         
         sum = 0
