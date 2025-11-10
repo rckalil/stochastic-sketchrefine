@@ -1,4 +1,5 @@
 import numpy as np
+import time
 import warnings
 from numpy.random import SFC64, SeedSequence, Generator
 from PgConnection.PgConnection import PgConnection
@@ -37,6 +38,8 @@ class GainScenarioGenerator(ScenarioGenerator):
         return hashed_value
 
     def generate_scenarios(self, seed, no_of_scenarios):
+        print("Start generation")
+        print(time.time())
         info = self.__get_info()
         sell_after_dates = []
         tuple_numbers = []
@@ -55,6 +58,7 @@ class GainScenarioGenerator(ScenarioGenerator):
         last_volatility_coeff = None
         drift = None
         last_drift = None
+        print("Variables set")
         for tuple in info:
             ticker, sell_after, price, volatility,\
             volatility_coeff, drift = tuple
@@ -94,6 +98,7 @@ class GainScenarioGenerator(ScenarioGenerator):
                 tuple_numbers.clear()
                 sell_after_dates.clear()
             
+            print("Tuple pre-processed")
             sell_after_dates.append(int(sell_after))
             tuple_numbers.append(tuple_number)
             last_ticker = ticker
@@ -135,6 +140,8 @@ class GainScenarioGenerator(ScenarioGenerator):
                     counter += 1
             tuple_numbers.clear()
             sell_after_dates.clear()
+        print("Finish him")
+        print(time.time())
         return gains
 
 
