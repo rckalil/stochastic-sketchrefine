@@ -528,6 +528,8 @@ class RCLSolve:
         if objective_type == ObjectiveType.MINIMIZATION:
             gurobi_objective = GRB.MINIMIZE
 
+        print("Info", coefficients)
+
         self.__model.setObjective(
             gp.LinExpr(coefficients, self.__vars),
             gurobi_objective)

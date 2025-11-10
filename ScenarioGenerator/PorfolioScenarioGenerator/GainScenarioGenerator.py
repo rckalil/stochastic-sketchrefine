@@ -59,7 +59,9 @@ class GainScenarioGenerator(ScenarioGenerator):
         drift = None
         last_drift = None
         print("Variables set")
+        print(time.time())
         for tuple in info:
+            # print("One")
             ticker, sell_after, price, volatility,\
             volatility_coeff, drift = tuple
             sell_after *= 2
@@ -92,13 +94,14 @@ class GainScenarioGenerator(ScenarioGenerator):
                         curr_price = curr_price * np.exp(exponent + exponent_noise)
                         if curr_price > 2 * last_price:
                             curr_price = 2 * last_price
+                        # print(period, curr_price - last_price)
                         gains[tuple_numbers[counter]].append(curr_price - last_price)
                         counter += 1
                 
                 tuple_numbers.clear()
                 sell_after_dates.clear()
             
-            print("Tuple pre-processed")
+            # print("Tuple pre-processed")
             sell_after_dates.append(int(sell_after))
             tuple_numbers.append(tuple_number)
             last_ticker = ticker
@@ -108,8 +111,11 @@ class GainScenarioGenerator(ScenarioGenerator):
             last_price = price
             tuple_number += 1
         
+        print("Chase", time.time())
         if len(sell_after_dates) > 0:
             hashed_value = (seed + self.__hash(ticker))%(10**8)
+            # print("Second part")
+            # print(hashed_value)
             rng = Generator(SFC64(SeedSequence(hashed_value)))
             sqrt_time_intervals = []
             last_period = 0
@@ -122,6 +128,7 @@ class GainScenarioGenerator(ScenarioGenerator):
                                 scale=sqrt_time_intervals,
                                 size=(no_of_scenarios,
                                 len(sell_after_dates)))
+            print('Beginning scenfn')
             for scenario_number in range(no_of_scenarios):
                 curr_price = price
                 last_period = 0
@@ -135,14 +142,17 @@ class GainScenarioGenerator(ScenarioGenerator):
                     curr_price = curr_price * np.exp(exponent + exponent_noise)
                     if curr_price > 2 * last_price:
                         curr_price = 2 * last_price
+                    # print(period, curr_price - last_price)
                     gains[tuple_numbers[counter]].append(
                             curr_price - last_price)
                     counter += 1
-            tuple_numbers.clear()
-            sell_after_dates.clear()
+            # tuple_numbers.clear()
+            # sell_after_dates.clear()
         print("Finish him")
         print(time.time())
-        return gains
+        print("Numbers", tuple_numbers)
+        print("Sell", sell_after_dates)
+        return gains, sell_after_dates
 
 
     def generate_scenarios_from_partition(

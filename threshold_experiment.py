@@ -54,27 +54,6 @@ if __name__ == '__main__':
         print('Parsed query:', query)
 
         start_time = time.time()
-        summarySearch = SummarySearch(
-            query=query, linear_relaxation=False,
-            dbInfo=PortfolioInfo, init_no_of_scenarios=1000,
-            init_no_of_summaries=10,
-            no_of_validation_scenarios=100,
-            approximation_bound=0.02)
-        # print("Nabo")
-        package, objective_value = summarySearch.solve()
-        summarySearch.display_package(package)
-        resultado = summarySearch.get_results(package)
-        summarySearchMetrics = summarySearch.get_metrics()
-        # print('Summary search took', time.time() - start_time, 'secs')
-        summarySearchMetrics.log()
-        # print('-----------------------------------')
-        end_time = time.time()
-        # print('Total time for gain threshold', gain_threshold, 'is', end_time - start_time, 'secs')
-        # print('===================================')
-        with open("tr.txt", "a") as f:
-            f.write(f"{gain_threshold},{end_time - start_time},{resultado}\n")
-
-        start_time = time.time()
         rclsolve = RCLSolve(
             query=query, linear_relaxation=False,
             dbInfo=PortfolioInfo, init_no_of_scenarios=100,

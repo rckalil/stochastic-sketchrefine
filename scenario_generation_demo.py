@@ -35,7 +35,7 @@ def gen_prices(args):
         relation=args.get_relation(),
         base_predicate=args.get_base_predicate()
     )
-    price_generator.generate_scenario(
+    price_generator.generate_scenarios(
         seed=args.get_seed(),
         no_of_scenarios=args.get_no_of_scenarios()
     )
@@ -46,10 +46,11 @@ def gen_gains(args):
         relation=args.get_relation(),
         base_predicate=args.get_base_predicate()
     )
-    gain_generator.generate_scenario(
+    result = gain_generator.generate_scenarios(
         seed=args.get_seed(),
         no_of_scenarios=args.get_no_of_scenarios()
     )
+    return result
 
 def gen_scenarios():
     start_time = time.time()
