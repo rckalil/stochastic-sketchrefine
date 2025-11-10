@@ -43,7 +43,7 @@ if __name__ == '__main__':
     SeedManager.reinitialize_seed()
     # print("Arroz")
 
-    for gain_threshold in range(-100, 150, 100):
+    for gain_threshold in range(-100, 750, 100):
         print("Berinjela")
         print('Gain threshold:', gain_threshold)
         formatted_query = query_template[4] % str(gain_threshold)
@@ -64,10 +64,21 @@ if __name__ == '__main__':
         
         package, objective_value = rclsolve.solve()
         rclsolve.display_package(package)
-        package_dict = rclsolve.get_results(package)
+        package_dict = rclsolve.get_results(package) # each asset option has id, ticker, sell_after?, gain, ...
         rclsolveMetrics = rclsolve.get_metrics()
         rclsolveMetrics.log()
+        # info = [i[0] for i in package_dict]
+        # print(info)
+        # gain = GainScenarioGenerator(relation='Stock_Investments_10',
+        #         base_predicate='')
+        # result = gain.generate_scenarios(
+        #         seed=1204567,
+        #         no_of_scenarios=1000,
+        #         info=info
+        #     )
+        # result = [r[0] for r in result]
         end_time = time.time()
+        print(len(result))
         with open("tr_rcl.txt", "a") as f:
             f.write(f"{gain_threshold},{end_time - start_time},{package_dict}\n")
         

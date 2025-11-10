@@ -37,10 +37,13 @@ class GainScenarioGenerator(ScenarioGenerator):
             hashed_value %= 2593697387
         return hashed_value
 
-    def generate_scenarios(self, seed, no_of_scenarios):
+    def generate_scenarios(self, seed, no_of_scenarios, info=[]):
         print("Start generation")
         print(time.time())
-        info = self.__get_info()
+        retrieve = True
+        if info == []:
+            retrieve = False
+            info = self.__get_info()
         # print("ovnwornvorwn", info)
         sell_after_dates = []
         tuple_numbers = []
@@ -63,8 +66,12 @@ class GainScenarioGenerator(ScenarioGenerator):
         print(time.time())
         for tuple in info:
             # print("One")
-            ticker, sell_after, price, volatility,\
-            volatility_coeff, drift = tuple
+            if retrieve:
+                identifier, ticker, sell_after, price, volatility,\
+                volatility_coeff, drift = tuple
+            else:
+                ticker, sell_after, price, volatility,\
+                volatility_coeff, drift = tuple
             sell_after *= 2
             if ticker != last_ticker and last_ticker is not None:
                 hashed_value = (seed + self.__hash(last_ticker))%(10**8)
