@@ -41,6 +41,7 @@ class GainScenarioGenerator(ScenarioGenerator):
         print("Start generation")
         print(time.time())
         info = self.__get_info()
+        # print("ovnwornvorwn", info)
         sell_after_dates = []
         tuple_numbers = []
         gains = []
@@ -152,7 +153,7 @@ class GainScenarioGenerator(ScenarioGenerator):
         print(time.time())
         print("Numbers", tuple_numbers)
         print("Sell", sell_after_dates)
-        return gains, sell_after_dates
+        return gains
 
 
     def generate_scenarios_from_partition(

@@ -528,7 +528,7 @@ class RCLSolve:
         if objective_type == ObjectiveType.MINIMIZATION:
             gurobi_objective = GRB.MINIMIZE
 
-        print("Info", coefficients)
+        # print("Info", coefficients)
 
         self.__model.setObjective(
             gp.LinExpr(coefficients, self.__vars),
@@ -1495,5 +1495,8 @@ class RCLSolve:
         results = []
         for id in package_dict:
             attr = self.__get_attributes(id)
-            results.append((attr[1], package_dict[id]))
+            print("Attr: ", attr)
+            print("Pack: ", package_dict[id])
+            # raise
+            results.append((attr, package_dict[id]))
         return results
