@@ -141,23 +141,44 @@ class GainScenarioGenerator(ScenarioGenerator):
                 curr_price = price
                 last_period = 0
                 counter = 0
-                kappa = 0.15
-                mean_level = 1.1 * price
+
+                # PARAMETROS DE REVERSAO (Mantidos do exemplo anterior)
+                kappa = 0.15 
+                mean_level = 1.1 * price 
+                
                 for period in sell_after_dates:
                     timegap = period - last_period
                     last_period = period
-                    reversion_drift = last_drift + kappa * (mean_level - curr_price) / curr_price
+                    
                     exponent_volatility = last_volatility * last_volatility_coeff
-                    exponent = (reversion_drift - 0.5 * exponent_volatility ** 2) * timegap
+                    
+                    # --- AJUSTE DA REVERSAO À MÉDIA (Drift Dinâmico) ---
+                    reversion_drift = last_drift + kappa * (mean_level - curr_price) / curr_price 
+                    
+                    # --- ALTERAÇÃO PRINCIPAL: SIMPLIFICAÇÃO DO DRIFT PARA NORMAL/LOG-NORMAL ---
+                    # Removendo o ajuste de Jensen (-0.5 * sigma^2) para manter o modelo mais simples,
+                    # focando apenas no retorno esperado (drift).
+                    exponent = reversion_drift * timegap 
+                    
+                    # O Ruído já é uma Normal Padrão, mas agora SEM o fator sqrt(delta t) no expoente
+                    # (Se você usar a mesma matriz 'noises', o ruído continua escalado por sqrt(delta t) fora do loop)
+                    # Assumindo que o ruído 'noises[scenario_number][counter]' já incorpora sqrt(timegap):
                     exponent_noise = exponent_volatility * noises[scenario_number][counter]
-                    exponent_noise = 0
+                    
+                    # Se o ruído não incorporar sqrt(timegap), a linha deveria ser:
+                    # exponent_noise = exponent_volatility * noises[scenario_number][counter] * np.sqrt(timegap)
+                    
+                    # Removendo a linha de teste que desativa o risco
+                    # exponent_noise = 0 
+                    
                     print("Factor: ", np.exp(exponent + exponent_noise))
                     curr_price = curr_price * np.exp(exponent + exponent_noise)
+                    
                     if curr_price > 2 * last_price:
                         curr_price = 2 * last_price
-                    # print(period, curr_price - last_price)
+                        
                     gains[tuple_numbers[counter]].append(
-                            curr_price - last_price)
+                        curr_price - last_price)
                     counter += 1
             # tuple_numbers.clear()
             # sell_after_dates.clear()

@@ -1319,7 +1319,7 @@ class RCLSolve:
                 probabilistically_unconstrained_package)
             if probabilistically_unconstrained_package is None:
                 self.__metrics.end_execution(0, 0)
-                return None
+                return (None, 0.0)
         
             probabilistically_unconstrained_package_with_indices = \
                 self.__get_package_with_indices()

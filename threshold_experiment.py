@@ -36,14 +36,14 @@ if __name__ == '__main__':
     query_template = ["SELECT PACKAGE(*) AS P\n",
                       "FROM Stock_Investments_10\n",
                       "SUCH THAT\n",
-                      "SUM(Price) <= 500 AND\n",
+                      "SUM(Price) <= 5000 AND\n",
                       "SUM(Gain) >= %s WITH PROBABILITY >= 0.97\n",
                       "MAXIMIZE EXPECTED SUM(Gain)"]
 
     SeedManager.reinitialize_seed()
     # print("Arroz")
 
-    for gain_threshold in range(-100, 650, 100):
+    for gain_threshold in range(10, 650, 100):
         print("Berinjela")
         print('Gain threshold:', gain_threshold)
         formatted_query = query_template[4] % str(gain_threshold)
