@@ -43,7 +43,7 @@ if __name__ == '__main__':
     SeedManager.reinitialize_seed()
     # print("Arroz")
 
-    for gain_threshold in range(-100, 750, 100):
+    for gain_threshold in range(-100, 650, 100):
         print("Berinjela")
         print('Gain threshold:', gain_threshold)
         formatted_query = query_template[4] % str(gain_threshold)
@@ -80,7 +80,7 @@ if __name__ == '__main__':
         end_time = time.time()
         # print(len(result))
         with open("tr_rcl.txt", "a") as f:
-            f.write(f"{gain_threshold},{end_time - start_time},{package_dict}\n")
-            # for line in package_dict: f.write(f"{line}")
-            # f.write(f"Objective value: ", objective_value)
+            f.write(f"{gain_threshold},{end_time - start_time}\n")
+            for line in package_dict: f.write(f"{line}\n")
+            f.write(f"Objective value: {objective_value}\n")
         

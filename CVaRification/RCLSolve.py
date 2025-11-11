@@ -563,6 +563,7 @@ class RCLSolve:
         package_dict = {}
         idx = 0
         try:
+            print("Get package", self._vars)
             for var in self.__vars:
                 if var.x > 0:
                     package_dict[

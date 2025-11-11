@@ -35,21 +35,24 @@ import multiprocessing as mp
 
 if __name__ == '__main__':
 
-    start_time = time.time()
-    seed = 1204567 
-   
-    args = Args(relation='Stock_Investments_10',
-                base_predicate='',
-                seed = seed,
-                no_of_scenarios=1000)
-    
-    gains, result= gen_gains(args)
-    print(gains[0:5])
-    print('Time taken to generate 1 million scenarios of gain from 20 thousand tuples:',
-          round(time.time() - start_time, 2))
+      package_dict = [((94682, 'LST', 1.0, 63.75, 0.00030121810855855924, 1.0, 0.02181150179219391), 2.0), ((94682, 'LST', 2.0, 63.75, 0.00030121810855855924, 1.0, 0.02181150179219391), 2.0)]
+      info = [i[0] for i in package_dict]
+      print(info)
+      start_time = time.time()
+      gain = GainScenarioGenerator(relation='Stock_Investments_10',
+            base_predicate='')
+      result = gain.generate_scenarios(
+            seed=1204567,
+            no_of_scenarios=1000,
+            info=info
+      )
+      result = [r[0] for r in result]
+      print(result)
+      print('Time taken to generate 1 million scenarios of gain from 20 thousand tuples:',
+            round(time.time() - start_time, 2))
 
-    print("""
-          
-          
-          """)
-    print(result)
+      print("""
+            
+            
+            """)
+      print(result)

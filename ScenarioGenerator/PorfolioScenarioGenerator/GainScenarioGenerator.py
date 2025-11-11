@@ -72,7 +72,7 @@ class GainScenarioGenerator(ScenarioGenerator):
             else:
                 ticker, sell_after, price, volatility,\
                 volatility_coeff, drift = tuple
-            sell_after *= 2
+            # sell_after *= 2
             if ticker != last_ticker and last_ticker is not None:
                 hashed_value = (seed + self.__hash(last_ticker))%(10**8)
                 rng = Generator(SFC64(SeedSequence(hashed_value)))
@@ -141,12 +141,17 @@ class GainScenarioGenerator(ScenarioGenerator):
                 curr_price = price
                 last_period = 0
                 counter = 0
+                kappa = 0.15
+                mean_level = 1.1 * price
                 for period in sell_after_dates:
                     timegap = period - last_period
                     last_period = period
+                    reversion_drift = last_drift + kappa * (mean_level - curr_price) / curr_price
                     exponent_volatility = last_volatility * last_volatility_coeff
-                    exponent = (last_drift - 0.5 * exponent_volatility ** 2) * timegap
+                    exponent = (reversion_drift - 0.5 * exponent_volatility ** 2) * timegap
                     exponent_noise = exponent_volatility * noises[scenario_number][counter]
+                    exponent_noise = 0
+                    print("Factor: ", np.exp(exponent + exponent_noise))
                     curr_price = curr_price * np.exp(exponent + exponent_noise)
                     if curr_price > 2 * last_price:
                         curr_price = 2 * last_price
