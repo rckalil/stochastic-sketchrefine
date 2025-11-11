@@ -36,7 +36,7 @@ if __name__ == '__main__':
     query_template = ["SELECT PACKAGE(*) AS P\n",
                       "FROM Stock_Investments_10\n",
                       "SUCH THAT\n",
-                      "SUM(Price) <= 400 AND\n",
+                      "SUM(Price) <= 500 AND\n",
                       "SUM(Gain) >= %s WITH PROBABILITY >= 0.97\n",
                       "MAXIMIZE EXPECTED SUM(Gain)"]
 
@@ -78,7 +78,9 @@ if __name__ == '__main__':
         #     )
         # result = [r[0] for r in result]
         end_time = time.time()
-        print(len(result))
+        # print(len(result))
         with open("tr_rcl.txt", "a") as f:
             f.write(f"{gain_threshold},{end_time - start_time},{package_dict}\n")
+            # for line in package_dict: f.write(f"{line}")
+            # f.write(f"Objective value: ", objective_value)
         
