@@ -557,13 +557,15 @@ class RCLSolve:
         
 
     def __get_package(self):
+        print("Packagingmmmmmm")
         self.__metrics.start_optimizer()
         self.__model.optimize()
         self.__metrics.end_optimizer()
         package_dict = {}
         idx = 0
         try:
-            print("Get package", self._vars)
+            print(len(self.__vars))
+            # print("Get package", self._vars)
             for var in self.__vars:
                 if var.x > 0:
                     package_dict[
@@ -1313,6 +1315,7 @@ class RCLSolve:
                 probabilistically_constrained=False
             )
 
+            print("Yaaay")
             probabilistically_unconstrained_package = \
                 self.__get_package()
             print('Probabilistically unconstrained package:',

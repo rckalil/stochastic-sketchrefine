@@ -35,11 +35,11 @@ import multiprocessing as mp
 
 if __name__ == '__main__':
 
-      package_dict = [((94682, 'LST', 1.0, 63.75, 0.00030121810855855924, 1.0, 0.02181150179219391), 2.0), ((94682, 'LST', 2.0, 63.75, 0.00030121810855855924, 1.0, 0.02181150179219391), 2.0)]
+      package_dict = [((94682, 'LST', 1.0, 63.75, 0.00030121810855855924, 1.0, 0.02181150179219391), 2.0), ((94682, 'LST', 90.0, 63.75, 0.00030121810855855924, 1.0, 0.02181150179219391), 2.0), ((1484, 'AAF', 25.0, 83.625, 0.0004944541354864608, 1.0, 0.029265916377195847), 3.0)]
       info = [i[0] for i in package_dict]
       print(info)
       start_time = time.time()
-      gain = GainScenarioGenerator(relation='Stock_Investments_10',
+      gain = GainScenarioGenerator(relation='Stock_Quarterly',
             base_predicate='')
       result = gain.generate_scenarios(
             seed=1204567,

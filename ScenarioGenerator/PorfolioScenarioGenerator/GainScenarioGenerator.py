@@ -150,17 +150,23 @@ class GainScenarioGenerator(ScenarioGenerator):
                     timegap = period - last_period
                     last_period = period
                     
-                    change = np.random.normal(drift, volatility*volatility_coeff, timegap)
-                    # print("Oscilações", change)
-                    old_price = curr_price
-                    curr_price = curr_price + sum(change)
-                    # print("Diff", curr_price - old_price)
+                    exponent_volatility = last_volatility * last_volatility_coeff
+        
+                    # --- CALCULO ORIGINAL DO GBM ---
+                    # Usa o drift estatico (last_drift) e o ajuste de Jensen (-0.5 * sigma^2)
+                    exponent = (0 - 0.5 * exponent_volatility ** 2) * timegap
+                    
+                    exponent_noise = exponent_volatility * noises[scenario_number][counter]
+                    
+                    # Sua linha de teste (removida aqui para restaurar o comportamento normal)
+                    # exponent_noise = 0 
                     
                     # print("Factor: ", np.exp(exponent + exponent_noise))
                     curr_price = curr_price * np.exp(exponent + exponent_noise)
                     
                     print("Log: ", curr_price, "|||", last_price)
-                    raise
+                    print(" ", sell_after, drift)
+
                     if curr_price > 2 * last_price:
                         curr_price = 2 * last_price
                         
