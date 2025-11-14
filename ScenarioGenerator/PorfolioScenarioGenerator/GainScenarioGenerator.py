@@ -38,8 +38,8 @@ class GainScenarioGenerator(ScenarioGenerator):
         return hashed_value
 
     def generate_scenarios(self, seed, no_of_scenarios, info=[]):
-        print("Start generation")
-        print(time.time())
+        # print("Start generation")
+        # print(time.time())
         retrieve = True
         if info == []:
             retrieve = False
@@ -62,8 +62,8 @@ class GainScenarioGenerator(ScenarioGenerator):
         last_volatility_coeff = None
         drift = None
         last_drift = None
-        print("Variables set")
-        print(time.time())
+        # print("Variables set")
+        # print(time.time())
         for tuple in info:
             # print("One")
             if retrieve:
@@ -119,7 +119,7 @@ class GainScenarioGenerator(ScenarioGenerator):
             last_price = price
             tuple_number += 1
         
-        print("Chase", time.time())
+        # print("Chase", time.time())
         if len(sell_after_dates) > 0:
             hashed_value = (seed + self.__hash(ticker))%(10**8)
             # print("Second part")
@@ -136,7 +136,7 @@ class GainScenarioGenerator(ScenarioGenerator):
                                 scale=sqrt_time_intervals,
                                 size=(no_of_scenarios,
                                 len(sell_after_dates)))
-            print('Beginning scenfn')
+            # print('Beginning scenfn')
             for scenario_number in range(no_of_scenarios):
                 curr_price = price
                 last_period = 0
@@ -150,30 +150,17 @@ class GainScenarioGenerator(ScenarioGenerator):
                     timegap = period - last_period
                     last_period = period
                     
-                    exponent_volatility = last_volatility * last_volatility_coeff
+                    change = np.random.normal(drift, volatility*volatility_coeff, timegap)
+                    # print("Oscilações", change)
+                    old_price = curr_price
+                    curr_price = curr_price + sum(change)
+                    # print("Diff", curr_price - old_price)
                     
-                    # --- AJUSTE DA REVERSAO À MÉDIA (Drift Dinâmico) ---
-                    reversion_drift = last_drift + kappa * (mean_level - curr_price) / curr_price 
-                    
-                    # --- ALTERAÇÃO PRINCIPAL: SIMPLIFICAÇÃO DO DRIFT PARA NORMAL/LOG-NORMAL ---
-                    # Removendo o ajuste de Jensen (-0.5 * sigma^2) para manter o modelo mais simples,
-                    # focando apenas no retorno esperado (drift).
-                    exponent = reversion_drift * timegap 
-                    
-                    # O Ruído já é uma Normal Padrão, mas agora SEM o fator sqrt(delta t) no expoente
-                    # (Se você usar a mesma matriz 'noises', o ruído continua escalado por sqrt(delta t) fora do loop)
-                    # Assumindo que o ruído 'noises[scenario_number][counter]' já incorpora sqrt(timegap):
-                    exponent_noise = exponent_volatility * noises[scenario_number][counter]
-                    
-                    # Se o ruído não incorporar sqrt(timegap), a linha deveria ser:
-                    # exponent_noise = exponent_volatility * noises[scenario_number][counter] * np.sqrt(timegap)
-                    
-                    # Removendo a linha de teste que desativa o risco
-                    # exponent_noise = 0 
-                    
-                    print("Factor: ", np.exp(exponent + exponent_noise))
+                    # print("Factor: ", np.exp(exponent + exponent_noise))
                     curr_price = curr_price * np.exp(exponent + exponent_noise)
                     
+                    print("Log: ", curr_price, "|||", last_price)
+                    raise
                     if curr_price > 2 * last_price:
                         curr_price = 2 * last_price
                         
@@ -182,10 +169,11 @@ class GainScenarioGenerator(ScenarioGenerator):
                     counter += 1
             # tuple_numbers.clear()
             # sell_after_dates.clear()
-        print("Finish him")
-        print(time.time())
-        print("Numbers", tuple_numbers)
-        print("Sell", sell_after_dates)
+        # print("Finish him")
+        # print(time.time())
+        # print("Numbers", tuple_numbers)
+        # print("Sell", sell_after_dates)
+        # print(gains)
         return gains
 
 
