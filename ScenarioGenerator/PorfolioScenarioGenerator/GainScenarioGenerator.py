@@ -164,8 +164,8 @@ class GainScenarioGenerator(ScenarioGenerator):
                     # print("Factor: ", np.exp(exponent + exponent_noise))
                     curr_price = curr_price * np.exp(exponent + exponent_noise)
                     
-                    print("Log: ", curr_price, "|||", last_price)
-                    print(" ", sell_after, drift)
+                    # print("Log: ", curr_price, "|||", last_price)
+                    # print(" ", sell_after, drift)
 
                     if curr_price > 2 * last_price:
                         curr_price = 2 * last_price

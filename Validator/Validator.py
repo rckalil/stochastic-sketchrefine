@@ -71,8 +71,8 @@ class Validator:
         for tuple_values in scenarios:
             _, multiplicity = ids_with_multiplicities[idx]
             idx += 1
-            #print('Validation Average:', np.average(tuple_values))
-            #print('Validation multiplicity:', multiplicity)
+            print('Validation Average:', np.average(tuple_values))
+            print('Validation multiplicity:', multiplicity)
             objective_value += np.average(tuple_values)*multiplicity
         
         return objective_value

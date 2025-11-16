@@ -1322,6 +1322,7 @@ class RCLSolve:
                 probabilistically_unconstrained_package)
             if probabilistically_unconstrained_package is None:
                 self.__metrics.end_execution(0, 0)
+                print("First return")
                 return (None, 0.0)
         
             probabilistically_unconstrained_package_with_indices = \
@@ -1337,8 +1338,8 @@ class RCLSolve:
             if not can_add_scenarios or not unacceptable_diff:
                 objective_upper_bound = validation_objective_value
                 break
-
             no_of_scenarios *= 2
+            print("Scenarios", no_of_scenarios)
         
         print('Objective value upper bound:',
               objective_upper_bound)
@@ -1349,6 +1350,7 @@ class RCLSolve:
                   'is validation feasible')
             self.__metrics.end_execution(
                 objective_upper_bound, 0)
+            print("Second return")
             return (probabilistically_unconstrained_package,
                     objective_upper_bound)
 
@@ -1413,6 +1415,7 @@ class RCLSolve:
                             get_objective_value(),
                         no_of_scenarios
                     )
+                    print("Third return")
                     return (
                         coefficient_search_result.get_package(),
                         coefficient_search_result.get_objective_value()
@@ -1445,6 +1448,7 @@ class RCLSolve:
                             get_objective_value(),
                         no_of_scenarios
                     )
+                    print("Forth return")
                     return (
                         threshold_search_result.get_package(),
                         threshold_search_result.get_objective_value()
@@ -1470,6 +1474,7 @@ class RCLSolve:
             if no_of_scenarios >= self.__no_of_validation_scenarios:
                 no_of_scenarios = self.__no_of_validation_scenarios
         self.__metrics.end_execution(0, no_of_scenarios)
+        print("Last return")
         return (None, 0.0)
     
 
