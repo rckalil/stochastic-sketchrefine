@@ -63,7 +63,7 @@ if __name__ == '__main__':
             bisection_threshold=0.01)
         
         package, objective_value = rclsolve.solve()
-        rclsolve.display_package(package)
+        # rclsolve.display_package(package)
         package_dict = rclsolve.get_results(package) # each asset option has id, ticker, sell_after?, gain, ...
         rclsolveMetrics = rclsolve.get_metrics()
         rclsolveMetrics.log()

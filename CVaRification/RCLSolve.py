@@ -1041,10 +1041,7 @@ class RCLSolve:
         is_model_setup: bool,
         can_add_scenarios: bool
     ) -> CVaRificationSearchResults:
-        while self.__l_inf(
-            min_no_of_scenarios_to_consider,
-            max_no_of_scenarios_to_consider
-        ) > 1:
+        while self.__l_inf(min_no_of_scenarios_to_consider, max_no_of_scenarios_to_consider) > 1:
             
             mid_no_of_scenarios_to_consider = []
             for ind in range(len(min_no_of_scenarios_to_consider)):
@@ -1378,10 +1375,7 @@ class RCLSolve:
             init_diff = self.__l_inf(
                 cvar_upper_bounds, cvar_lower_bounds)
 
-            while self.__l_inf(cvar_upper_bounds, cvar_lower_bounds)\
-                >= self.__bisection_threshold*init_diff and\
-                    self.__l_inf(min_no_of_scenarios_to_consider,
-                                 max_no_of_scenarios_to_consider) >= 1:
+            while self.__l_inf(cvar_upper_bounds, cvar_lower_bounds) >= self.__bisection_threshold*init_diff and self.__l_inf(min_no_of_scenarios_to_consider, max_no_of_scenarios_to_consider) >= 1:
                 
                 print('CVaR upper bounds:', cvar_upper_bounds)
                 print('CVaR lower bounds:', cvar_lower_bounds)
