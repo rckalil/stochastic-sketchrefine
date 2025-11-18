@@ -1012,14 +1012,7 @@ class DistPartition:
 
 if __name__ == '__main__':
     tables = [
-        'stock_investments_1',
-        'stock_investments_3',
-        'stock_investments_9',
-        'stock_investments_15',
-        'stock_investments_30',
-        'stock_investments_45',
-        'stock_investments_90',
-        'stock_investments_half'
+        'stock_quarterly'
     ]
 
 

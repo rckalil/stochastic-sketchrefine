@@ -1,1 +1,2 @@
 table,no_of_partitions,time
+stock_quarterly,702,103.63396191596985

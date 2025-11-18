@@ -37,14 +37,14 @@ def execute_sql(cursor, sql):
 
 PORTFOLIO_FILE = 'portfolio.csv'
 
-PORTFOLIO_TABLE_NAME = 'Stock_Investments'
+PORTFOLIO_TABLE_NAME = 'Stock_Quarterly'
 
 PORTFOLIO_TUPLE_VARIANT_SUBSTRING = ''
 
 PORTFOLIO_VARIANCE_VARIANT_SUBSTRING = 'Volatility'
 PORTFOLIO_LAMBDA_VARIANT_SUBSTRING = 'Volatility_Lambda'
 
-PORTFOLIO_TUPLE_VARIATION_SUBSTRINGS = ['1']
+PORTFOLIO_TUPLE_VARIATION_SUBSTRINGS = ['']
 
 PORTFOLIO_TUPLE_VARIATIONS = [1]
 
@@ -71,7 +71,7 @@ rng = np.random.default_rng(INIT_SEED)
 def create_portfolio_tuple_variant_datasets(
         interval, interval_string, cursor
 ):
-    table_name = PORTFOLIO_TABLE_NAME + '_' + interval_string
+    table_name = PORTFOLIO_TABLE_NAME
     is_first_line = True
     row_number = 0
     for line in open(PORTFOLIO_FILE, 'r').readlines():
@@ -80,7 +80,7 @@ def create_portfolio_tuple_variant_datasets(
         else:
             values = line.split(',')
             sell_after = 0
-            while sell_after < 730:
+            while sell_after < 90:
                 sell_after += interval
                 tuple = dict()
                 for attribute in portfolio_attributes:
@@ -116,14 +116,14 @@ def create_portfolio_volatility_variant_datasets(
         + '_' + volatility_coeff_string
     is_first_line = True
     row_number = 0
-    interval = 90
+    interval = 30
     for line in open(PORTFOLIO_FILE, 'r').readlines():
         if is_first_line:
             is_first_line = False
         else:
             values = line.split(',')
             sell_after = 0
-            while sell_after < 730:
+            while sell_after < 90:
                 sell_after += interval
                 tuple = dict()
                 for attribute in portfolio_attributes:
@@ -161,14 +161,14 @@ def create_portfolio_volatility_coeff_variant_datasets(
                                               size = 3457*730*2)
     is_first_line = True
     row_number = 0
-    interval = 0.5
+    interval = 1
     for line in open(PORTFOLIO_FILE, 'r').readlines():
         if is_first_line:
             is_first_line = False
         else:
             values = line.split(',')
             sell_after = 0
-            while sell_after < 730:
+            while sell_after < 90:
                 sell_after += interval
                 tuple = dict()
                 for attribute in portfolio_attributes:

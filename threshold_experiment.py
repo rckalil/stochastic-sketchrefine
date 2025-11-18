@@ -43,7 +43,7 @@ if __name__ == '__main__':
     SeedManager.reinitialize_seed()
     # print("Arroz")
 
-    for gain_threshold in range(100, 150, 100):
+    for gain_threshold in range(100, 350, 100):
         print("Berinjela")
         print('Gain threshold:', gain_threshold)
         formatted_query = query_template[4] % str(gain_threshold)
