@@ -2,6 +2,7 @@ from StochasticPackageQuery.Constraints.Constraint import Constraint
 from StochasticPackageQuery.Constraints.RepeatConstraint.RepeatConstraint import RepeatConstraint
 from StochasticPackageQuery.Constraints.PackageSizeConstraint.PackageSizeConstraint import PackageSizeConstraint
 from StochasticPackageQuery.Constraints.DeterministicConstraint.DeterministicConstraint import DeterministicConstraint
+from StochasticPackageQuery.Constraints.LogisticConstraint.LogisticConstraint import LogisticConstraint
 from StochasticPackageQuery.Constraints.ExpectedSumConstraint.ExpectedSumConstraint import ExpectedSumConstraint
 from StochasticPackageQuery.Constraints.VaRConstraint.VaRConstraint import VaRConstraint
 from StochasticPackageQuery.Constraints.CVaRConstraint.CVaRConstraint import CVaRConstraint
@@ -88,6 +89,9 @@ class Query:
 
     def add_expected_sum_constraint(self):
         self.__constraints.append(ExpectedSumConstraint())
+
+    def add_logistic_constraint(self):
+        self.__constraints.append(LogisticConstraint())
 
     def add_var_constraint(self):
         self.__constraints.append(VaRConstraint())

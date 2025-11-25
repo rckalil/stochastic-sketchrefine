@@ -51,10 +51,11 @@ if __name__ == '__main__':
         query_lines[4] = formatted_query
         query = Parser().parse(query_lines)
         print('Parsed query:', query)
+        break
 
         package_dict, objective_value = SketchRefine(query, PortfolioInfo).solve()
-                print('Sketch package:', package_dict,
-                    'Objective value:', objective_value)
+        print('Sketch package:', package_dict,
+            'Objective value:', objective_value)
 
         start_time = time.time()
         rclsolve = RCLSolve(

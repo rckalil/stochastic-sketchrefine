@@ -1,5 +1,6 @@
 from StochasticPackageQuery.Parser.State.AddDeterministicConstraintState import AddDeterministicConstraintState
 from StochasticPackageQuery.Parser.State.AddExpectedSumConstraintState import AddExpectedSumConstraintState
+from StochasticPackageQuery.Parser.State.AddLogisticConstraintState import AddLogisticConstraintState
 from StochasticPackageQuery.Parser.State.AddPackageSizeConstraintState import AddPackageSizeConstraintState
 from StochasticPackageQuery.Parser.State.AddRepeatConstraintState import AddRepeatConstraintState
 from StochasticPackageQuery.Parser.State.BasePredicateEditingState import BasePredicateEditingState
@@ -414,6 +415,33 @@ class Parser:
         constraint_sum_limit_editing_state.add_transition(
             Transition(' ', constraint_sum_limit_parsed_state)
         )
+
+        log_keyword_detected_state = AddLogisticConstraintState() # Novo estado que você criará
+        ready_for_constraints_state.add_transition(
+            Transition('l', log_keyword_detected_state)
+        )
+
+        log_risk_budget_read_state = self.__expect_phrase(
+            log_keyword_detected_state, 'og risk budget'
+        )
+
+        space_after_log_budget = State()
+        log_risk_budget_read_state.add_transition(
+            Transition(' ', space_after_log_budget)
+        )
+        space_after_log_budget.add_transition(
+            Transition(' ', space_after_log_budget)
+        )
+
+        reading_a_in_and_state = State()
+        space_after_log_budget.add_transition(
+            Transition('a', reading_a_in_and_state) # Transiciona para ler o 'AND'
+        )
+        space_after_log_budget.add_transition(
+            Transition('m', ready_for_objective_state) # Transiciona para ler o 'MINIMIZE/MAXIMIZE'
+        )
+
+
         var_constraint_detected_state = TurnToVaRConstraintState()
         constraint_sum_limit_parsed_state.add_transition(
             Transition('w', var_constraint_detected_state)
@@ -664,10 +692,13 @@ class Parser:
         return query
     
     def parse(self, query_lines) -> Query:
+        print("A, ", query_lines)
         query_str = self.preprocess(query_lines)
+        print("B, ", query_str)
         state = self.__init_state
         query = Query()
         for character in query_str:
+            print(character, end = "")
             state = state.get_next_state(character)
             query = state.process(query, character)
         if state != self.__query_successfully_parsed_state:

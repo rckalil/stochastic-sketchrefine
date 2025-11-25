@@ -22,7 +22,13 @@ class State:
         self.__transitions.append(transition)
 
     def get_next_state(self, char: chr):
+        print("Getting next state for char:", char)
+        print("Current transitions:")
+        print(self.__transitions)
+        trans = [t.get_trigger() for t in self.__transitions]
+        print("Firing transitions for char:", trans)
         for transition in self.__transitions:
+            print(transition.get_trigger(), transition.fires(char))
             if transition.fires(char):
                 return transition.get_next_state()
         raise Exception
