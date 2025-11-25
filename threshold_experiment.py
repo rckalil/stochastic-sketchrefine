@@ -41,9 +41,8 @@ if __name__ == '__main__':
                       "MAXIMIZE EXPECTED SUM(Gain)"]
 
     SeedManager.reinitialize_seed()
-    # print("Arroz")
 
-    for gain_threshold in range(500, 650, 100):
+    for gain_threshold in range(300, 650, 100):
         print("Berinjela")
         print('Gain threshold:', gain_threshold)
         formatted_query = query_template[4] % str(gain_threshold)
@@ -52,6 +51,10 @@ if __name__ == '__main__':
         query_lines[4] = formatted_query
         query = Parser().parse(query_lines)
         print('Parsed query:', query)
+
+        package_dict, objective_value = SketchRefine(query, PortfolioInfo).solve()
+                print('Sketch package:', package_dict,
+                    'Objective value:', objective_value)
 
         start_time = time.time()
         rclsolve = RCLSolve(
@@ -64,21 +67,13 @@ if __name__ == '__main__':
         
         package, objective_value = rclsolve.solve()
         # rclsolve.display_package(package)
-        package_dict = rclsolve.get_results(package) # each asset option has id, ticker, sell_after?, gain, ...
+        package_dict = rclsolve.get_results(package)
         rclsolveMetrics = rclsolve.get_metrics()
         rclsolveMetrics.log()
-        # info = [i[0] for i in package_dict]
-        # print(info)
-        # gain = GainScenarioGenerator(relation='Stock_Investments_10',
-        #         base_predicate='')
-        # result = gain.generate_scenarios(
-        #         seed=1204567,
-        #         no_of_scenarios=1000,
-        #         info=info
-        #     )
-        # result = [r[0] for r in result]
         end_time = time.time()
-        # print(len(result))
+        
+        if package_dict == None: break
+        print("Done with: ", gain_threshold)
         with open("tr_rcl.txt", "a") as f:
             f.write(f"{gain_threshold},{end_time - start_time}\n")
             for line in package_dict: f.write(f"{line}\n")

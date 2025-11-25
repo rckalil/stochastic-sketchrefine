@@ -122,8 +122,7 @@ class GainScenarioGenerator(ScenarioGenerator):
         # print("Chase", time.time())
         if len(sell_after_dates) > 0:
             hashed_value = (seed + self.__hash(ticker))%(10**8)
-            # print("Second part")
-            # print(hashed_value)
+            
             rng = Generator(SFC64(SeedSequence(hashed_value)))
             sqrt_time_intervals = []
             last_period = 0
@@ -152,16 +151,10 @@ class GainScenarioGenerator(ScenarioGenerator):
                     
                     exponent_volatility = last_volatility * last_volatility_coeff
         
-                    # --- CALCULO ORIGINAL DO GBM ---
-                    # Usa o drift estatico (last_drift) e o ajuste de Jensen (-0.5 * sigma^2)
                     exponent = (0 - 0.5 * exponent_volatility ** 2) * timegap
                     
                     exponent_noise = exponent_volatility * noises[scenario_number][counter]
-                    
-                    # Sua linha de teste (removida aqui para restaurar o comportamento normal)
-                    # exponent_noise = 0 
-                    
-                    # print("Factor: ", np.exp(exponent + exponent_noise))
+
                     curr_price = curr_price * np.exp(exponent + exponent_noise)
                     
                     # print("Log: ", curr_price, "|||", last_price)
