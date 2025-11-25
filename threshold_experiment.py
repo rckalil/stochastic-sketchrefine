@@ -51,7 +51,7 @@ if __name__ == '__main__':
         query_lines[4] = formatted_query
         query = Parser().parse(query_lines)
         print('Parsed query:', query)
-        break
+        # break
 
         package_dict, objective_value = SketchRefine(query, PortfolioInfo).solve()
         print('Sketch package:', package_dict,
