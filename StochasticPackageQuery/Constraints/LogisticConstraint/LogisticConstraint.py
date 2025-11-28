@@ -16,12 +16,12 @@ class LogisticConstraint(Constraint):
         # risco (B_i) são pré-determinadas (o RBP é resolvido em um problema de otimização convexo
         # após a simulação).
         self.__is_inequality_sign_set = True
-        self.__inequality_sign = RelationalOperators.GREATER_THAN_OR_EQUAL_TO
+        self.__inequality_sign = RelationalOperators.LESS_THAN_OR_EQUAL_TO
         self.__is_sum_limit_set = True
-        self.__sum_limit = 0.0 
+        self.__sum_limit = 1.0 
         
         # O nome do atributo é o keyword completo (LOG RISK BUDGET) ou a função.
-        self.__attribute_name = 'LOG_RISK_BUDGET_CONSTRAINT'
+        self.__attribute_name = 'SELL_AFTER'
 
     def is_deterministic_constraint(self) -> bool:
         """Indica que esta é uma restrição do tipo determinística (para o parser)."""

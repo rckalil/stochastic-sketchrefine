@@ -108,7 +108,6 @@ class RCLSolve:
         self.__metrics = OptimizationMetrics(
             'RCLSolve', self.__is_linear_relaxation
         )
-
     
     def __get_stochastic_attributes(self):
         attributes = set()
@@ -127,7 +126,6 @@ class RCLSolve:
             )
         return attributes
 
-
     def __get_deterministic_attributes(self):
         attributes = set()
         for constraint in self.__query.get_constraints():
@@ -143,7 +141,6 @@ class RCLSolve:
             )
         return attributes
     
-
     def __get_number_of_tuples(self):
         sql_query = "SELECT COUNT(*) FROM " \
             + self.__query.get_relation()
@@ -156,14 +153,12 @@ class RCLSolve:
         PgConnection.Execute(sql_query)
         return PgConnection.Fetch()[0][0]
     
-
     def __get_upper_bound_for_vars(self) -> int:
         for constraint in self.__query.get_constraints():
             if constraint.is_repeat_constraint():
                 return 1 + constraint.get_repetition_limit()
         return None
-    
-    
+      
     def __add_variables_to_model(self) -> None:
         max_repetition = \
             self.__get_upper_bound_for_vars()
@@ -189,7 +184,6 @@ class RCLSolve:
                     )
                 )
     
-
     def __get_gurobi_inequality(
             self, inequality_sign: RelationalOperators):
         if inequality_sign == RelationalOperators.EQUALS:
@@ -198,7 +192,6 @@ class RCLSolve:
             return GRB.GREATER_EQUAL
         return GRB.LESS_EQUAL
     
-
     def __add_package_size_constraint_to_model(
         self, package_size_constraint: PackageSizeConstraint
     ):

@@ -14,8 +14,8 @@ if __name__ == '__main__':
     query_template = ["SELECT PACKAGE(*) AS P\n",
                       "FROM Stock_Quarterly\n",
                       "SUCH THAT\n",
-                      "SUM(Price) <= 500 AND\n",
-                      "LOG RISK BUDGET\n",
+                      "SUM(Price) <= 500\n",
+                    #   "LOG RISK BUDGET\n",
                       "MAXIMIZE EXPECTED SUM(Gain)"]
                     #   "LOG RISK BUDGET >= 0\n",
 
@@ -30,6 +30,8 @@ if __name__ == '__main__':
         # query_lines[4] = formatted_query
         query = Parser().parse(query_lines)
         print('Parsed query:', query)
+        print(query.get_objective())
+        print(query.get_constraints())
         # break
         # package_dict, objective_value = SketchRefine(query, PortfolioInfo).solve()
         # print('Sketch package:', package_dict,
