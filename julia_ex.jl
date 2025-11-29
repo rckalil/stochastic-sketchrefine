@@ -39,10 +39,10 @@ function call_optimizer(relative_losses, alpha=0.9)
     d = size(relative_losses, 1)
     B = ones(d)
     status, w = cvar_rbp(B, alpha, relative_losses)
-    println("Status")
-    println(status)
-    println("W")
-    println(w)
+    # println("Status")
+    # println(status)
+    # println("W")
+    # println(w)
     return status, w
 end
 
@@ -63,6 +63,7 @@ function package(q, actions, m_time)
         if q[choice] > 0
             act = floor(Int, choice/m_time)
             time = choice - act*m_time + 1
+            act += 1
 
             # println(actions)
             identifier = actions[act, 5]
@@ -86,27 +87,72 @@ function top(package, num)
     sorted_indices = sortperm(package[:, 4], rev=true)
     sorted_package = package[sorted_indices, :]
     top = sorted_package[1:num, :]
-    println("Top ", num, " items sorted by column 4:")
-    println(top)
+    # println("Top ", num, " items sorted by column 4:")
+    # println(top)
     return top
 end
 
 
 function run()
+    start = time()
     path = "Data/portfolio.csv"
     n_sim = 10
     m_time = 7
     factor = 2831*m_time
-    num = 20
+    num = 10
 
     actions = get_actions(path)
+    # actions = actions[1:10, :]
     relative_losses = simulate(actions, n_sim, m_time)
+    println("Starting optimization")
     status, w = call_optimizer(relative_losses)
     if !status
         q = get_int(w, factor)
-        package = package(q, actions, m_time)
-        top = top(package, num)
+        pack = package(q, actions, m_time)
+        final = top(pack, num)
         println("The package to be chosen is ")
-        println(top)
+        println(final)
     end
+    finish = time()
+    println("Total time: ")
+    println(finish-start)
+end
+
+function time_exp()
+    
+    path = "Data/portfolio.csv"
+    n_sim = 2
+    m_time = 7
+    factor = 2831*m_time
+    num = 10
+
+    actions = get_actions(path)
+    # actions = actions[1:10, :]
+    
+    clock = []
+
+    for i in 2:3
+        m_time = i*2
+        factor = 2831*m_time
+        relative_losses = simulate(actions, n_sim, m_time)
+        println("Starting optimization")
+        start = time()
+        status, w = call_optimizer(relative_losses)
+        finish = time()
+        run_time = finish-start
+        println(run_time)
+        if !status
+            q = get_int(w, factor)
+            pack = package(q, actions, m_time)
+            final = top(pack, num)
+            println("The package to be chosen is ")
+            println(final)
+        end
+        # finish = time()
+        
+        println("Total time: ")
+        println(run_time)
+        clock = append!(clock, run_time)
+    end
+    println(clock)
 end
