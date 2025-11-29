@@ -14,7 +14,7 @@ function simulate(actions, n_sim, m_time)
     d = size(actions, 1)
     rng = MersenneTwister(123)
     Z = randn(rng, d*m_time, n_sim)
-    S_t = zeros(d*m_time, n_sim)
+    loss = zeros(d*m_time, n_sim)
     for i in 1:d
         for dt in 1:m_time
             sqrt_dt = sqrt(dt)
@@ -25,12 +25,12 @@ function simulate(actions, n_sim, m_time)
 
             exponent_drift = (mu_daily - 0.5 * sigma_daily^2) * dt
             exponent_noise = sigma_daily * sqrt_dt * Z[line, :]
-            loss  = S0 * exp.(exponent_drift .+ exponent_noise)
-            S_t[line, :] = S0 .- loss
+            S_t  = S0 * exp.(exponent_drift .+ exponent_noise)
+            loss[line, :] = S0 .- S_t
         end
     end
 
-    return S_t
+    return loss
 
 end
 
@@ -58,34 +58,55 @@ end
 
 function package(q, actions, m_time)
     d = size(q, 1)
-    pack = zeros(0, )
+    pack = zeros(0, 8)
     for choice in 1:d
+        if q[choice] > 0
+            act = floor(Int, choice/m_time)
+            time = choice - act*m_time + 1
 
+            # println(actions)
+            identifier = actions[act, 5]
+            ticker = actions[act, 1]
+            sell_after = time
+            price = actions[act, 2]
+            volatility = actions[act, 4]
+            volatility_coef = 1.0
+            drift = actions[act, 3]
+            quantity = q[choice]
+
+            addition = [identifier, ticker, sell_after, price, volatility, volatility_coef, drift, quantity]
+            addition = reshape(addition, 1, 8)
+            pack = cat(pack, addition; dims=1)
+        end
     end
+    return pack
+end
+
+function top(package, num)
+    sorted_indices = sortperm(package[:, 4], rev=true)
+    sorted_package = package[sorted_indices, :]
+    top = sorted_package[1:num, :]
+    println("Top ", num, " items sorted by column 4:")
+    println(top)
+    return top
 end
 
 
 function run()
-    rng = MersenneTwister(1)
+    path = "Data/portfolio.csv"
+    n_sim = 10
+    m_time = 7
+    factor = 2831*m_time
+    num = 20
 
-    println(rng)
-
-    # Parameters
-    d    = 3  # dimension
-    nsim = 10 # Nb of simulations
-
-    B = ones(d)
-    alpha = 0.90
-    relative_losses = randn(rng, d, nsim)
-    println(length(relative_losses))
-
-    status, w = cvar_rbp(B, alpha, relative_losses)
-
-    println("Finished")
-    println(status)
-    # @assert status == 0
-    println(w)
-    # @assert isapprox(w, [0.2280, 0.2706, 0.5014]; atol=1e-4)
-
-    println(2)
+    actions = get_actions(path)
+    relative_losses = simulate(actions, n_sim, m_time)
+    status, w = call_optimizer(relative_losses)
+    if !status
+        q = get_int(w, factor)
+        package = package(q, actions, m_time)
+        top = top(package, num)
+        println("The package to be chosen is ")
+        println(top)
+    end
 end
