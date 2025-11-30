@@ -498,20 +498,25 @@ class RCLSolve:
                         constraint, no_of_scenarios
                     )
             if constraint.is_risk_constraint():
+                print("Risk Constraint coming")
+                print(probabilistically_constrained)
                 if probabilistically_constrained:
+                    print("Passing")
                     if risk_constraint_index not in \
                         trivial_constraints:
                         if constraint.is_cvar_constraint():
+                            print("Constraint ready")
                             cvarified_constraint = \
                                 constraint
                         else:
+                            print("Prepare constraint")
                             cvarified_constraint = \
                                 self.__get_cvarified_constraint(
                                     constraint=constraint,
                                     cvar_threshold=cvar_thresholds[
                                         risk_constraint_index]
                                 )
-                        
+                        print("Adding cvar")
                         self.__add_lcvar_constraint_to_model(
                             risk_constraint=constraint,
                             cvarified_constraint=cvarified_constraint,
@@ -522,6 +527,7 @@ class RCLSolve:
                                 ]
                         )
                         risk_constraint_index += 1
+        # raise Exception("Stop right after cvar constraint for analysis purposes.")
 
     
     def __add_objective_to_model(
@@ -533,7 +539,7 @@ class RCLSolve:
         print("Objective attribute: ", attr)
         coefficients = []
 
-        print("Objective stochasticity: ", objective.get_stochasticity())
+        # print("Objective stochasticity: ", objective.get_stochasticity())
 
         if objective.get_stochasticity() == \
             Stochasticity.DETERMINISTIC:
@@ -546,7 +552,7 @@ class RCLSolve:
             if objective_type == ObjectiveType.MINIMIZATION:
                 gurobi_objective = GRB.MINIMIZE
 
-            print("Info", coefficients)
+            # print("Info", coefficients)
 
             self.__model.setObjective(
                 gp.LinExpr(coefficients, self.__vars),
@@ -597,7 +603,7 @@ class RCLSolve:
             list_of_y_vars = list(y_vars.values())
             objective_expression = t_var
             objective_expression += gp.LinExpr(
-                [objective_term_y_factor] * (1/no_of_scenarios), list_of_y_vars
+                [objective_term_y_factor] * no_of_scenarios, list_of_y_vars
             )
 
             self.__model.setObjective(
@@ -644,7 +650,7 @@ class RCLSolve:
             if objective_type == ObjectiveType.MINIMIZATION:
                 gurobi_objective = GRB.MINIMIZE
 
-            print("Info", coefficients)
+            # print("Info", coefficients)
 
             self.__model.setObjective(
                 gp.LinExpr(coefficients, self.__vars),
@@ -1012,6 +1018,7 @@ class RCLSolve:
             print('CVaR mid thresholds:', cvar_mid_thresholds)
 
             if not is_model_setup:
+                print("Ameixas")
                 self.__model_setup(
                     no_of_scenarios=no_of_scenarios,
                     no_of_scenarios_to_consider=\
@@ -1167,6 +1174,7 @@ class RCLSolve:
                 )
             
             if not is_model_setup:
+                print("Banana")
                 self.__model_setup(
                     no_of_scenarios=no_of_scenarios,
                     no_of_scenarios_to_consider=\
@@ -1422,6 +1430,7 @@ class RCLSolve:
         unacceptable_diff = True
 
         while unacceptable_diff:
+            print("Caqui")
             self.__model_setup(
                 no_of_scenarios=no_of_scenarios,
                 no_of_scenarios_to_consider=[],

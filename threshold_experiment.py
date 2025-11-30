@@ -34,7 +34,7 @@ import numpy as np
 if __name__ == '__main__':
 
     query_template = ["SELECT PACKAGE(*) AS P\n",
-                      "FROM Stock_Quarterly\n",
+                      "FROM Stock_Investments_5\n",
                       "SUCH THAT\n",
                       "SUM(Price) <= 500 AND\n",
                       "SUM(Gain) >= %s WITH PROBABILITY >= 0.97\n",
@@ -42,7 +42,7 @@ if __name__ == '__main__':
 
     SeedManager.reinitialize_seed()
 
-    for gain_threshold in range(300, 650, 100):
+    for gain_threshold in range(300, 350, 100):
         print("Berinjela")
         print('Gain threshold:', gain_threshold)
         formatted_query = query_template[4] % str(gain_threshold)
@@ -51,11 +51,13 @@ if __name__ == '__main__':
         query_lines[4] = formatted_query
         query = Parser().parse(query_lines)
         print('Parsed query:', query)
+        for c in query.get_constraints():
+            print(c.is_var_constraint())
         # break
 
-        package_dict, objective_value = SketchRefine(query, PortfolioInfo).solve()
-        print('Sketch package:', package_dict,
-            'Objective value:', objective_value)
+        # package_dict, objective_value = SketchRefine(query, PortfolioInfo).solve()
+        # print('Sketch package:', package_dict,
+        #     'Objective value:', objective_value)
 
         start_time = time.time()
         rclsolve = RCLSolve(
