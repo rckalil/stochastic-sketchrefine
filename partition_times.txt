@@ -1,2 +1,8 @@
 table,no_of_partitions,time
-stock_quarterly,702,103.63396191596985
+stock_investments_1,100,10.784566640853882
+stock_investments_5,154,23.037718534469604
+stock_investments_10,303,36.61040425300598
+stock_investments_15,436,50.621906995773315
+stock_investments_20,557,59.06372880935669
+stock_investments_25,631,65.72715997695923
+stock_investments_30,678,75.4483380317688

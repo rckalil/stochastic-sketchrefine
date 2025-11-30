@@ -11,6 +11,7 @@ from StochasticPackageQuery.Parser.State.ConstraintSumLimitSettingState import C
 from StochasticPackageQuery.Parser.State.ConstraintTailTypeEditingState import ConstraintTailTypeEditingState
 from StochasticPackageQuery.Parser.State.ObjectiveAttributeNameEditingState import ObjectiveAttributeNameEditingState
 from StochasticPackageQuery.Parser.State.ObjectiveStochasticityState import ObjectiveStochasticityState
+from StochasticPackageQuery.Parser.State.CvarObjectiveState import CvarObjectiveState
 from StochasticPackageQuery.Parser.State.ObjectiveTypeState import ObjectiveTypeState
 from StochasticPackageQuery.Parser.State.PackageAliasEditingState import PackageAliasEditingState
 from StochasticPackageQuery.Parser.State.PackageSizeLimitEditingState import PackageSizeLimitEditingState
@@ -276,6 +277,8 @@ class Parser:
         ready_for_next_constraint.add_transition(
             Transition(' ', ready_for_constraints_state)
         )
+
+        # Objective
         ready_for_objective_state = State()
         package_size_limit_taken_state.add_transition(
             Transition('m', ready_for_objective_state)
@@ -320,6 +323,34 @@ class Parser:
         sum_read_state = self.__expect_phrase(
             sum_detected_state, 'um'
         )
+
+        # Cvar Objective
+
+        # >>> NOVO BLOCO PARA CVAR OBJECTIVE <<<
+        cvar_objective_state = CvarObjectiveState() # CvarObjectiveState cria a CvarObjective()
+        objective_type_read_state.add_transition(
+            Transition('c', cvar_objective_state)  # Transição para ler 'CVAR'
+        )
+        
+        # Leitura da palavra 'var' (complemento de 'c')
+        cvar_read_state = self.__expect_phrase(
+            cvar_objective_state, 'var'
+        )
+
+        # Transição para o SUM (o objetivo continua sendo a soma)
+        sum_detected_after_cvar = ObjectiveStochasticityState()
+        cvar_read_state.add_transition(
+            Transition(' ', cvar_read_state) # Consome espaços
+        )
+        cvar_read_state.add_transition(
+            Transition('s', sum_detected_after_cvar) # Transiciona para ler 'SUM'
+        )
+
+        sum_read_state = self.__expect_phrase(
+            sum_detected_after_cvar, 'um'
+        )
+
+
         ready_for_objective_attribute_state = State()
         expected_sum_read_state.add_transition(
             Transition('(', ready_for_objective_attribute_state)

@@ -531,8 +531,12 @@ class RCLSolve:
 
         if objective.get_stochasticity() == \
             Stochasticity.DETERMINISTIC:
+            print("Yaaaaa")
+            raise
             coefficients = self.__values[attr]
         else:
+            print("Yeeeeee")
+            raise
             if no_of_scenarios <= \
                 self.__feasible_no_of_scenarios_to_store:
                 for idx in range(self.__no_of_vars):

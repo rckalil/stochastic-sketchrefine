@@ -12,22 +12,22 @@ import numpy as np
 if __name__ == '__main__':
 
     query_template = ["SELECT PACKAGE(*) AS P\n",
-                      "FROM Stock_Quarterly\n",
+                      "FROM Stock_Investments_%s\n",
                       "SUCH THAT\n",
                       "SUM(Price) <= 500 AND\n",
                       "LOG RISK BUDGET\n",
-                      "MAXIMIZE EXPECTED SUM(Gain)"]
+                      "MAXIMIZE CVAR SUM(Gain)"]
                     #   "LOG RISK BUDGET >= 0\n",
 
     SeedManager.reinitialize_seed()
 
-    for gain_threshold in range(300, 350, 100):
+    for days in range(5, 35, 5):
         print("Berinjela")
-        print('Gain threshold:', gain_threshold)
-        # formatted_query = query_template[4] % str(gain_threshold)
+        print('Hold assets up to ', days, " days.")
+        formatted_query = query_template[1] % str(days)
         # print('Formatted query:', formatted_query)
         query_lines = query_template.copy()
-        # query_lines[4] = formatted_query
+        query_lines[1] = formatted_query
         query = Parser().parse(query_lines)
         print('Parsed query:', query)
         print(query.get_objective())
@@ -57,9 +57,9 @@ if __name__ == '__main__':
         end_time = time.time()
         
         if package_dict == None: break
-        print("Done with: ", gain_threshold)
+        print("Done with: ", days)
         with open("tr_rcl.txt", "a") as f:
-            f.write(f"{gain_threshold},{end_time - start_time}\n")
+            f.write(f"{days},{end_time - start_time}\n")
             for line in package_dict: f.write(f"{line}\n")
             f.write(f"Objective value: {objective_value}\n")
         

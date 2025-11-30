@@ -37,16 +37,18 @@ def execute_sql(cursor, sql):
 
 PORTFOLIO_FILE = 'portfolio.csv'
 
-PORTFOLIO_TABLE_NAME = 'Stock_Quarterly'
+# PORTFOLIO_TABLE_NAME = 'Stock_Quarterly'
+PORTFOLIO_TABLE_NAME = 'Stock_Investments'
 
 PORTFOLIO_TUPLE_VARIANT_SUBSTRING = ''
 
 PORTFOLIO_VARIANCE_VARIANT_SUBSTRING = 'Volatility'
 PORTFOLIO_LAMBDA_VARIANT_SUBSTRING = 'Volatility_Lambda'
 
-PORTFOLIO_TUPLE_VARIATION_SUBSTRINGS = ['']
+# PORTFOLIO_TUPLE_VARIATION_SUBSTRINGS = ['']
+PORTFOLIO_TUPLE_VARIATION_SUBSTRINGS = ['1', '5', '10', '15', '20', '25', '30']
 
-PORTFOLIO_TUPLE_VARIATIONS = [1]
+PORTFOLIO_TUPLE_VARIATIONS = [1, 5, 10, 15, 20, 25, 30]
 
 portfolio_attributes = [
     'id',
@@ -71,7 +73,7 @@ rng = np.random.default_rng(INIT_SEED)
 def create_portfolio_tuple_variant_datasets(
         interval, interval_string, cursor
 ):
-    table_name = PORTFOLIO_TABLE_NAME
+    table_name = PORTFOLIO_TABLE_NAME + '_' + interval_string
     is_first_line = True
     row_number = 0
     for line in open(PORTFOLIO_FILE, 'r').readlines():
@@ -80,8 +82,8 @@ def create_portfolio_tuple_variant_datasets(
         else:
             values = line.split(',')
             sell_after = 0
-            while sell_after < 90:
-                sell_after += interval
+            while sell_after < interval:
+                sell_after += 1
                 tuple = dict()
                 for attribute in portfolio_attributes:
                     if attribute == 'id':

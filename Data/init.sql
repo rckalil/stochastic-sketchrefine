@@ -43,7 +43,75 @@ DROP TABLE IF EXISTS Stock_Investments_Volatility_Lambda_4x;
 DROP TABLE IF EXISTS Stock_Investments_Volatility_Lambda_5x;
 
 DROP TABLE IF EXISTS Stock_Investments_1;
+
+DROP TABLE IF EXISTS Stock_Investments_1;
 CREATE TABLE Stock_Investments_1(
+    id int not null unique,
+    ticker varchar(10),
+    sell_after int,
+    price float,
+    volatility float,
+    volatility_coeff float,
+    drift float
+);
+
+DROP TABLE IF EXISTS Stock_Investments_5;
+CREATE TABLE Stock_Investments_5(
+    id int not null unique,
+    ticker varchar(10),
+    sell_after int,
+    price float,
+    volatility float,
+    volatility_coeff float,
+    drift float
+);
+
+DROP TABLE IF EXISTS Stock_Investments_10;
+CREATE TABLE Stock_Investments_10(
+    id int not null unique,
+    ticker varchar(10),
+    sell_after int,
+    price float,
+    volatility float,
+    volatility_coeff float,
+    drift float
+);
+
+DROP TABLE IF EXISTS Stock_Investments_15;
+CREATE TABLE Stock_Investments_15(
+    id int not null unique,
+    ticker varchar(10),
+    sell_after int,
+    price float,
+    volatility float,
+    volatility_coeff float,
+    drift float
+);
+
+DROP TABLE IF EXISTS Stock_Investments_20;
+CREATE TABLE Stock_Investments_20(
+    id int not null unique,
+    ticker varchar(10),
+    sell_after int,
+    price float,
+    volatility float,
+    volatility_coeff float,
+    drift float
+);
+
+DROP TABLE IF EXISTS Stock_Investments_25;
+CREATE TABLE Stock_Investments_25(
+    id int not null unique,
+    ticker varchar(10),
+    sell_after int,
+    price float,
+    volatility float,
+    volatility_coeff float,
+    drift float
+);
+
+DROP TABLE IF EXISTS Stock_Investments_30;
+CREATE TABLE Stock_Investments_30(
     id int not null unique,
     ticker varchar(10),
     sell_after int,

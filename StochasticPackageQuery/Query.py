@@ -7,6 +7,7 @@ from StochasticPackageQuery.Constraints.ExpectedSumConstraint.ExpectedSumConstra
 from StochasticPackageQuery.Constraints.VaRConstraint.VaRConstraint import VaRConstraint
 from StochasticPackageQuery.Constraints.CVaRConstraint.CVaRConstraint import CVaRConstraint
 from StochasticPackageQuery.Objective.Objective import Objective
+from StochasticPackageQuery.Objective.CvarObjective import CvarObjective
 
 
 class Query:
@@ -167,6 +168,24 @@ class Query:
 
     def set_objective_stochasticity(self, is_stochastic: bool):
         self.__objective.set_stochasticity(is_stochastic)
+    
+    def set_objective_to_cvar(self):
+        """
+        Substitui o objeto Objective atual por uma nova instância de CvarObjective.
+        Isso altera o comportamento de otimização para Risco (CVaR).
+        """
+        # 1. Cria uma nova instância do objetivo CVaR
+        cvar_objective = CvarObjective()
+        
+        # 2. Substitui o objetivo atual (self.__objective) por esta nova instância
+        self.__objective = cvar_objective
+        
+        # 3. Define a estocasticidade do CVaR (se nao for feito no construtor)
+        #    Embora CvarObjective deva fazer isso no __init__, esta linha garante o tipo
+        #    (Note: A classe CvarObjective ja lida com a estocasticidade internamente)
+        # cvar_objective.set_stochasticity(is_stochastic=True) 
+        
+        return
 
     def add_character_to_objective_attribute(self, char: chr):
         self.__objective.add_character_to_attribute_name(char)
