@@ -9,6 +9,9 @@ class Constraint:
     def is_deterministic_constraint(self) -> bool:
         return False
 
+    def is_logistic_constraint(self) -> bool:
+        return False
+
     def is_expected_sum_constraint(self) -> bool:
         return False
 

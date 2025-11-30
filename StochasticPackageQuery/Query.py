@@ -102,6 +102,7 @@ class Query:
     def add_character_to_attribute_name(self, char: chr):
         if len(self.__constraints) < 1 or (not self.__constraints[-1].is_deterministic_constraint() and
                                            not self.__constraints[-1].is_expected_sum_constraint() and
+                                           not self.__constraints[-1].is_logistic_constraint() and
                                            not self.__constraints[-1].is_var_constraint()):
             raise Exception
         self.__constraints[-1].add_character_to_attribute_name(char)
@@ -110,6 +111,7 @@ class Query:
         if len(self.__constraints) < 1 or (not self.__constraints[-1].is_package_size_constraint() and
                                            not self.__constraints[-1].is_deterministic_constraint() and
                                            not self.__constraints[-1].is_expected_sum_constraint() and
+                                           not self.__constraints[-1].is_logistic_constraint() and
                                            not self.__constraints[-1].is_var_constraint()):
             raise Exception
         self.__constraints[-1].set_inequality_sign(char)
@@ -117,6 +119,7 @@ class Query:
     def add_character_to_constraint_sum_limit(self, char: chr):
         if len(self.__constraints) < 1 or (not self.__constraints[-1].is_deterministic_constraint() and
                                            not self.__constraints[-1].is_expected_sum_constraint() and
+                                           not self.__constraints[-1].is_logistic_constraint() and
                                            not self.__constraints[-1].is_var_constraint()):
             raise Exception
         self.__constraints[-1].add_character_to_sum_limit(char)

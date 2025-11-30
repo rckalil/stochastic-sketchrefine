@@ -14,8 +14,8 @@ if __name__ == '__main__':
     query_template = ["SELECT PACKAGE(*) AS P\n",
                       "FROM Stock_Quarterly\n",
                       "SUCH THAT\n",
-                      "SUM(Price) <= 500\n",
-                    #   "LOG RISK BUDGET\n",
+                      "SUM(Price) <= 500 AND\n",
+                      "LOG RISK BUDGET\n",
                       "MAXIMIZE EXPECTED SUM(Gain)"]
                     #   "LOG RISK BUDGET >= 0\n",
 
@@ -45,6 +45,9 @@ if __name__ == '__main__':
             approximation_bound=0.02,
             sampling_tolerance=0.01,
             bisection_threshold=0.01)
+        
+        # rclsolve.__add_constraints_to_model
+        # query.add_con
         
         package, objective_value = rclsolve.solve()
         # rclsolve.display_package(package)

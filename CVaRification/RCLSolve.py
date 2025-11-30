@@ -12,6 +12,7 @@ from SeedManager.SeedManager import SeedManager
 from StochasticPackageQuery.Constraints.CVaRConstraint.CVaRConstraint import CVaRConstraint
 from StochasticPackageQuery.Constraints.VaRConstraint.VaRConstraint import VaRConstraint
 from StochasticPackageQuery.Constraints.DeterministicConstraint.DeterministicConstraint import DeterministicConstraint
+from StochasticPackageQuery.Constraints.LogisticConstraint.LogisticConstraint import LogisticConstraint
 from StochasticPackageQuery.Constraints.ExpectedSumConstraint.ExpectedSumConstraint import ExpectedSumConstraint
 from StochasticPackageQuery.Constraints.PackageSizeConstraint.PackageSizeConstraint import PackageSizeConstraint
 from StochasticPackageQuery.Objective.Objective import Objective
@@ -215,6 +216,22 @@ class RCLSolve:
             self.__get_gurobi_inequality(
                 deterministic_constraint.get_inequality_sign())
         sum_limit = deterministic_constraint.get_sum_limit()
+        
+        self.__model.addLConstr(
+            gp.LinExpr(self.__values[attribute], self.__vars),
+            gurobi_inequality, sum_limit
+        )
+    
+    def __add_logistic_constraint_to_model(
+        self, logistic_constraint: LogisticConstraint
+    ):
+        print("Adding logistic constraint to model, yaaay")
+        raise NotImplementedError("LogisticConstraint addition not implemented yet.")
+        attribute = logistic_constraint.get_attribute_name()
+        gurobi_inequality = \
+            self.__get_gurobi_inequality(
+                logistic_constraint.get_inequality_sign())
+        sum_limit = logistic_constraint.get_sum_limit()
         
         self.__model.addLConstr(
             gp.LinExpr(self.__values[attribute], self.__vars),
@@ -438,6 +455,10 @@ class RCLSolve:
                 )
             if constraint.is_deterministic_constraint():
                 self.__add_deterministic_constraint_to_model(
+                    constraint
+                )
+            if constraint.is_logistic_constraint():
+                self.__add_logistic_constraint_to_model(
                     constraint
                 )
             if constraint.is_expected_sum_constraint():

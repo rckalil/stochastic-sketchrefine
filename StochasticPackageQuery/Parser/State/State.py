@@ -28,7 +28,7 @@ class State:
         trans = [t.get_trigger() for t in self.__transitions]
         print("Firing transitions for char:", trans)
         for transition in self.__transitions:
-            print(transition.get_trigger(), transition.fires(char))
+            print(transition.get_trigger(), transition.fires(char), char)
             if transition.fires(char):
                 return transition.get_next_state()
         raise Exception
