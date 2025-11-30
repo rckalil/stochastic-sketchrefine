@@ -597,7 +597,7 @@ class RCLSolve:
             list_of_y_vars = list(y_vars.values())
             objective_expression = t_var
             objective_expression += gp.LinExpr(
-                [objective_term_y_factor] * no_of_scenarios, list_of_y_vars
+                [objective_term_y_factor] * (1/no_of_scenarios), list_of_y_vars
             )
 
             self.__model.setObjective(
