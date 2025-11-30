@@ -21,7 +21,7 @@ class LogisticConstraint(Constraint):
         self.__sum_limit = 1.0 
         
         # O nome do atributo é o keyword completo (LOG RISK BUDGET) ou a função.
-        self.__attribute_name = 'SELL_AFTER'
+        self.__attribute_name = 'PRICE'
 
     def is_logistic_constraint(self) -> bool:
         """Indica que esta é uma restrição do tipo determinística (para o parser)."""

@@ -221,12 +221,19 @@ class RCLSolve:
             gp.LinExpr(self.__values[attribute], self.__vars),
             gurobi_inequality, sum_limit
         )
+
+        self.__model.addGenConstr(
+            gp.LinExpr(self.__values[attribute], self.__vars),
+            GRB.LESS_EQUAL,
+            sum_limit + 0.0001,
+            name="Deterministic_Constraint_Tolerance_Upper_Bound"
+        )
     
     def __add_logistic_constraint_to_model(
         self, logistic_constraint: LogisticConstraint
     ):
         print("Adding logistic constraint to model, yaaay")
-        raise NotImplementedError("LogisticConstraint addition not implemented yet.")
+        # raise NotImplementedError("LogisticConstraint addition not implemented yet.")
         attribute = logistic_constraint.get_attribute_name()
         gurobi_inequality = \
             self.__get_gurobi_inequality(
