@@ -17,11 +17,11 @@ if __name__ == '__main__':
                       "SUM(Price) <= 500 AND\n",
                       "LOG RISK BUDGET\n",
                       "MAXIMIZE CVAR SUM(Gain)"]
-                    #   "LOG RISK BUDGET >= 0\n",
+                    #   "MAXIMIZE EXPECTED SUM(Gain)"
 
     SeedManager.reinitialize_seed()
 
-    for days in range(5, 35, 5):
+    for days in range(5, 10, 5):
         print("Berinjela")
         print('Hold assets up to ', days, " days.")
         formatted_query = query_template[1] % str(days)
