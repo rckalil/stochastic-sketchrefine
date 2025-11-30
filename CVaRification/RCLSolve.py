@@ -125,6 +125,12 @@ class RCLSolve:
                 self.__query.get_objective().\
                     get_attribute_name()
             )
+        elif self.__query.get_objective().get_stochasticity() \
+            == Stochasticity.CVAR:
+            attributes.add(
+                self.__query.get_objective().\
+                    get_attribute_name()
+            )
         return attributes
 
     def __get_deterministic_attributes(self):
@@ -532,19 +538,94 @@ class RCLSolve:
         if objective.get_stochasticity() == \
             Stochasticity.DETERMINISTIC:
             print("Yaaaaa")
-            raise
             coefficients = self.__values[attr]
+
+            objective_type = objective.get_objective_type()
+
+            gurobi_objective = GRB.MAXIMIZE
+            if objective_type == ObjectiveType.MINIMIZATION:
+                gurobi_objective = GRB.MINIMIZE
+
+            print("Info", coefficients)
+
+            self.__model.setObjective(
+                gp.LinExpr(coefficients, self.__vars),
+                gurobi_objective)
+            
+        elif objective.get_stochasticity() == \
+            Stochasticity.CVAR:
+            print("Yiiiiii")
+            alpha = objective.get_percentage_of_scenarios() #/ 100.0
+            tail_type = objective.get_tail_type()
+            objective_type = objective.get_objective_type()
+            t_var = self.__model.addVar(name="t_var")
+            y_vars = self.__model.addVars(no_of_scenarios, name="y_loss")
+            attr = objective.get_attribute_name()
+
+            if tail_type == TailType.LOWEST:
+                # Minimizar Perda (Cauda Inferior/Pior 5% dos casos)
+                alpha_ru = alpha 
+            else: # TailType.HIGHEST
+                # Maximizar Ganho (Cauda Superior/Melhor 5% dos casos)
+                alpha_ru = 1.0 - alpha
+            objective_term_y_factor = 1.0 / (no_of_scenarios * alpha_ru)
+
+            if objective_type == ObjectiveType.MAXIMIZATION:
+                # Se queremos MAXIMIZAR o CVaR de Ganho (G), 
+                # minimizamos o -CVaR(G) ou usamos a formula R-U invertida.
+                # L(x) deve ser o **NEGATIVO** do Ganho, para ser a Perda.
+                sign_inverter = -1.0
+            else:
+                # MINIMIZAR o CVaR de Perda (L). L(x) = Perda.
+                sign_inverter = 1.0
+            
+            for j in range(no_of_scenarios):
+                scenario_coeffs = []
+                for idx in range(self.__no_of_vars):
+                    # Pega o valor do Ganho/Perda no cenário j
+                    # print(self.__scenarios)
+                    value_j = self.__scenarios[attr][idx][j]
+                    # Multiplica pelo Inversor: L(x) = sign_inverter * Ganho
+                    scenario_coeffs.append(value_j * sign_inverter) 
+                
+                # Expressao Linear: L(x)_j = SUM(value_j * sign_inverter * x_i)
+                Lx_j = gp.LinExpr(scenario_coeffs, self.__vars)
+                
+                # Restrição R-U: y_j >= L(x)_j - t_var
+                # Reorganizada como: L(x)_j - t_var <= y_vars[j]
+                self.__model.addLConstr(
+                    Lx_j - t_var - y_vars[j],
+                    GRB.LESS_EQUAL, 0,
+                    name=f"cvar_ru_{j}"
+                )
+                self.__model.addLConstr(y_vars[j], GRB.GREATER_EQUAL, 0)
+            
+            list_of_y_vars = list(y_vars.values())
+            objective_expression = t_var
+            objective_expression += gp.LinExpr(
+                [objective_term_y_factor] * no_of_scenarios, list_of_y_vars
+            )
+
+            self.__model.setObjective(
+                objective_expression,
+                GRB.MINIMIZE
+            )
+
+
+
+
         else:
             print("Yeeeeee")
-            raise
             if no_of_scenarios <= \
                 self.__feasible_no_of_scenarios_to_store:
                 for idx in range(self.__no_of_vars):
+                    print(self.__scenarios)
                     coefficients.append(
                         np.average(
                             self.__scenarios[attr][idx]
                         )
                     )
+                raise
             else:
                 total_scenarios = 0
                 coefficient_set = [[] for _ in \
@@ -565,17 +646,17 @@ class RCLSolve:
                         np.average(coefficient_set[idx])
                     )
         
-        objective_type = objective.get_objective_type()
+            objective_type = objective.get_objective_type()
 
-        gurobi_objective = GRB.MAXIMIZE
-        if objective_type == ObjectiveType.MINIMIZATION:
-            gurobi_objective = GRB.MINIMIZE
+            gurobi_objective = GRB.MAXIMIZE
+            if objective_type == ObjectiveType.MINIMIZATION:
+                gurobi_objective = GRB.MINIMIZE
 
-        # print("Info", coefficients)
+            print("Info", coefficients)
 
-        self.__model.setObjective(
-            gp.LinExpr(coefficients, self.__vars),
-            gurobi_objective)
+            self.__model.setObjective(
+                gp.LinExpr(coefficients, self.__vars),
+                gurobi_objective)
     
 
     def __model_setup(

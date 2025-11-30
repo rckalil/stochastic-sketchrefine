@@ -183,7 +183,7 @@ class Query:
         # 3. Define a estocasticidade do CVaR (se nao for feito no construtor)
         #    Embora CvarObjective deva fazer isso no __init__, esta linha garante o tipo
         #    (Note: A classe CvarObjective ja lida com a estocasticidade internamente)
-        # cvar_objective.set_stochasticity(is_stochastic=True) 
+        cvar_objective.set_stochasticity(is_stochastic=True) 
         
         return
 
