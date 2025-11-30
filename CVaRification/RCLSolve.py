@@ -221,29 +221,47 @@ class RCLSolve:
             gp.LinExpr(self.__values[attribute], self.__vars),
             gurobi_inequality, sum_limit
         )
-
-        self.__model.addGenConstr(
-            gp.LinExpr(self.__values[attribute], self.__vars),
-            GRB.LESS_EQUAL,
-            sum_limit + 0.0001,
-            name="Deterministic_Constraint_Tolerance_Upper_Bound"
-        )
     
     def __add_logistic_constraint_to_model(
         self, logistic_constraint: LogisticConstraint
     ):
         print("Adding logistic constraint to model, yaaay")
         # raise NotImplementedError("LogisticConstraint addition not implemented yet.")
+        
         attribute = logistic_constraint.get_attribute_name()
         gurobi_inequality = \
             self.__get_gurobi_inequality(
                 logistic_constraint.get_inequality_sign())
         sum_limit = logistic_constraint.get_sum_limit()
         
-        self.__model.addLConstr(
-            gp.LinExpr(self.__values[attribute], self.__vars),
-            gurobi_inequality, sum_limit
-        )
+        # self.__model.addLConstr(
+        #     gp.LinExpr(self.__values[attribute], self.__vars),
+        #     gurobi_inequality, sum_limit
+        # )
+
+        print("Sign: ", gurobi_inequality)
+        linear_sum_expr = gp.LinExpr(self.__values[attribute], self.__vars)
+        if gurobi_inequality == GRB.GREATER_EQUAL:
+            s = self.__model.addVar(lb=1e-6, name=f"{attribute}_sum_support") # Inferior bound is above zero
+            z = self.__model.addVar(name=f"{attribute}_log_support")
+
+            self.__model.addConstr(
+                s == linear_sum_expr,
+                name=f"{attribute}_sum_definition"
+            )
+
+            self.__model.addGenConstrLog(s, z, name=f"{attribute}_log_condition")
+
+            self.__model.addLConstr(
+                z,
+                gp.GRB.GREATER_EQUAL,
+                sum_limit, 
+                name=f"{attribute}_log_bound"
+            )
+
+            self.__model.Params.NonConvex = 2
+        else:
+            raise NotImplementedError("LogisticConstraint only implemented for >= sign.")
 
 
     def __add_feasible_no_of_scenarios(self, attribute: str):
