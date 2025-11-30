@@ -57,35 +57,35 @@ function get_int(w, factor)
 end
 
 function package(q, actions, m_time)
-    println("Arroz")
+    # println("Arroz")
     d = size(q, 1)
     pack = zeros(0, 8)
-    println("Botão")
+    # println("Botão")
     for choice in 1:d
         if q[choice] > 0
-            println("Cavalo")
+            # println("Cavalo")
             act = floor(Int, choice/m_time)
             time = choice - act*m_time + 1
             act += 1
-            println("Dia")
+            # println("Dia")
 
             # println(actions)
-            println(act, choice)
+            # println(act, choice)
             identifier = actions[act, 5]
             ticker = actions[act, 1]
-            println("Estanho")
+            # println("Estanho")
             sell_after = time
             price = actions[act, 2]
             volatility = actions[act, 4]
             volatility_coef = 1.0
             drift = actions[act, 3]
             quantity = q[choice]
-            println("Família")
+            # println("Família")
 
             addition = [identifier, ticker, sell_after, price, volatility, volatility_coef, drift, quantity]
             addition = reshape(addition, 1, 8)
             pack = cat(pack, addition; dims=1)
-            println("Gerânio")
+            # println("Gerânio")
         end
     end
     return pack
@@ -95,14 +95,14 @@ function top(package, num)
     if num > size(package, 1)
         num = size(package, 1)
     end
-    print("Assadura")
+    # print("Assadura")
     sorted_indices = sortperm(package[:, 4], rev=true)
-    println("Bocarra")
+    # println("Bocarra")
     sorted_package = package[sorted_indices, :]
-    println("Centeio")
-    println(sorted_package)
+    # println("Centeio")
+    # println(sorted_package)
     top = sorted_package[1:num, :]
-    println("Doido")
+    # println("Doido")
     # println("Top ", num, " items sorted by column 4:")
     # println(top)
     return top
@@ -142,7 +142,7 @@ function time_exp()
     num = 10
 
     actions = get_actions(path)
-    actions = actions[1:10, :]
+    # actions = actions[1:10, :]
     assets = size(actions, 1)
     time_results = DataFrame(m_time = Int[], run_time = Float64[])
     package_cols = [
@@ -164,14 +164,14 @@ function time_exp()
         status, w = call_optimizer(relative_losses)
         finish = time()
         run_time = finish-start
-        println(run_time)
+        # println(run_time)
         push!(time_results, (m_time, run_time))
         if !status
             q = get_int(w, factor)
             pack = package(q, actions, m_time)
             final = top(pack, num)
-            println("The package to be chosen is ")
-            println(final)
+            # println("The package to be chosen is ")
+            # println(final)
             final_df = DataFrame(final, package_cols)
             insertcols!(final_df, 1, :m_time => m_time)
             
@@ -183,9 +183,21 @@ function time_exp()
         end
         # finish = time()
         
-        println("Total time: ")
-        println(run_time)
+        # println("Total time: ")
+        # println(run_time)
         clock = append!(clock, run_time)
+
+        # --- Salvamento Final ---
+    
+        # 1. Salvar os tempos de execução
+        time_output_path = "julia_times.csv"
+        CSV.write(time_output_path, time_results)
+        println("\nTempo de execução salvo em: $time_output_path")
+
+        # 2. Salvar os pacotes escolhidos
+        package_output_path = "julia_packages.csv"
+        CSV.write(package_output_path, package_results)
+        println("Pacotes escolhidos salvo em: $package_output_path")
     end
     # --- Salvamento Final ---
     
