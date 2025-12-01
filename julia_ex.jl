@@ -68,7 +68,7 @@ function package(q, actions, m_time)
     for choice in 1:d
         if q[choice] > 0
             # println("Cavalo")
-            act = floor(Int, choice/m_time)
+            act = floor(Int, (choice-1)/m_time)
             time = choice - act*m_time + 1
             println(choice, " ", act, " ", time)
             act += 1
@@ -119,7 +119,7 @@ function run()
     path = "Data/portfolio.csv"
     n_sim = 10
     m_time = 7
-    factor = 2831*m_time
+    factor = 50*m_time
     num = 10
 
     actions = get_actions(path)
@@ -160,7 +160,7 @@ function time_exp()
     
     clock = []
 
-    for i in 1:6
+    for i in 1:2
         m_time = i*2
         factor = assets*m_time
         relative_losses = simulate(actions, n_sim, m_time)
@@ -197,27 +197,54 @@ function time_exp()
         # --- Salvamento Final ---
     
         # 1. Salvar os tempos de execução
-        time_output_path = "julia_times.csv"
-        CSV.write(time_output_path, time_results)
-        println("\nTempo de execução salvo em: $time_output_path")
+        record_time(m_time, run_time, n_sim)
 
         # 2. Salvar os pacotes escolhidos
-        package_output_path = "julia_packages.csv"
-        CSV.write(package_output_path, package_results)
-        println("Pacotes escolhidos salvo em: $package_output_path")
+        reform(package_results, m_time, n_sim)
     end
-    # --- Salvamento Final ---
-    
-    # 1. Salvar os tempos de execução
-    time_output_path = "julia_times.csv"
-    CSV.write(time_output_path, time_results)
-    println("\nTempo de execução salvo em: $time_output_path")
-
-    # 2. Salvar os pacotes escolhidos
-    package_output_path = "julia_packages.csv"
-    CSV.write(package_output_path, package_results)
-    println("Pacotes escolhidos salvo em: $package_output_path")
     
     println(clock)
     return time_results, package_results
+end
+
+function record_time(days::Int, time_elapsed::Float64, sc::Int)
+    
+    # Usa 'open' com modo "a" (append) para anexar ao arquivo
+    open("julia_times.txt", "a") do f
+        # Escreve a linha: days, tempo_decorrido, sc
+        write(f, "$(days),$(time_elapsed),$(sc)\n")
+    end
+    
+    println("Tempo registrado em: julia_times.txt")
+end
+
+function reform(data_list::DataFrame, days::Int, sc::Int, filepath::String="results")
+
+    df = data_list
+
+    # 3. Manipular: Normalizar e Escalar (Total Sum = 50)
+    
+    # Calcular a Soma Total
+    total_sum = sum(df[!, "quantity"])
+    
+    # Normalizar (soma = 1.0) e Escalar (soma = 50.0)
+    df[!, "quantity"] = (df[!, "quantity"] ./ total_sum) .* 50.0
+
+    # 4. Ordenar e Selecionar o Top 10 (Decrescente)
+    sort!(df, "quantity", rev=true)
+    df = df[1:min(10, nrow(df)), :] # Pega o top 10 ou o que estiver disponível
+
+    # 5. Salvar em CSV
+    
+    # Cria o diretório se não existir
+    if !isdir(filepath)
+        mkpath(filepath)
+    end
+    
+    filename = joinpath(filepath, "julia_$(days)_$(sc).csv")
+    CSV.write(filename, df)
+    
+    println("\n--- Exportação Concluída ---")
+    println("DataFrame criado com $(nrow(df)) linhas.")
+    println("Salvo em: $filename")
 end

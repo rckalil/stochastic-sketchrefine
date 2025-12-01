@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 
 def reform(data_list: list, days, sc, filepath: str = "results"):
-    print(data_list)
+    # print(data_list)
     # Colunas para os detalhes (7 colunas) + o peso final (1 coluna)
     cols = ["ID", "Ticker", "Sell_After", "Price", "Volatility", "Vol_Coeff", "Drift", "Objective_Value"]
 
@@ -33,7 +33,7 @@ def reform(data_list: list, days, sc, filepath: str = "results"):
     df['Objective_Value'] = df['Objective_Value'] * 50
     df = df.sort_values(by=['Objective_Value'], ascending=False)
 
-    print(df)
+    # print(df)
     df = df.head(10)
 
     # 4. Salvar em CSV
@@ -62,14 +62,14 @@ if __name__ == '__main__':
 
     for days in range(5, 31, 5):
         for sc in range(1000, 5001, 1000):
-            print("Berinjela")
+            # print("Berinjela")
             print('Hold assets up to ', days, " days.")
             formatted_query = query_template[1] % str(days)
             # print('Formatted query:', formatted_query)
             query_lines = query_template.copy()
             query_lines[1] = formatted_query
             query = Parser().parse(query_lines)
-            print('Parsed query:', query)
+            # print('Parsed query:', query)
             print(query.get_objective())
             print(query.get_constraints())
             # sc = 500 * days  # number of scenarios
@@ -109,4 +109,3 @@ if __name__ == '__main__':
                 f.write(f"{days},{end_time - start_time},{sc}\n")
                 # for line in package_dict: f.write(f"{line}\n")
                 # f.write(f"Objective value: {objective_value}\n")
-    print("No answer")

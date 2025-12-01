@@ -562,25 +562,19 @@ class RCLSolve:
                         constraint, no_of_scenarios
                     )
             if constraint.is_risk_constraint():
-                print("Risk Constraint coming")
-                print(probabilistically_constrained)
                 if probabilistically_constrained:
-                    print("Passing")
                     if risk_constraint_index not in \
                         trivial_constraints:
                         if constraint.is_cvar_constraint():
-                            print("Constraint ready")
                             cvarified_constraint = \
                                 constraint
                         else:
-                            print("Prepare constraint")
                             cvarified_constraint = \
                                 self.__get_cvarified_constraint(
                                     constraint=constraint,
                                     cvar_threshold=cvar_thresholds[
                                         risk_constraint_index]
                                 )
-                        print("Adding cvar")
                         self.__add_lcvar_constraint_to_model(
                             risk_constraint=constraint,
                             cvarified_constraint=cvarified_constraint,
@@ -591,7 +585,6 @@ class RCLSolve:
                                 ]
                         )
                         risk_constraint_index += 1
-        # raise Exception("Stop right after cvar constraint for analysis purposes.")
 
     
     def __add_objective_to_model(
@@ -602,16 +595,12 @@ class RCLSolve:
             no_of_scenarios
         )
 
-        print("Watching objective addition")
         attr = objective.get_attribute_name()
-        print("Objective attribute: ", attr)
         coefficients = []
 
-        # print("Objective stochasticity: ", objective.get_stochasticity())
 
         if objective.get_stochasticity() == \
             Stochasticity.DETERMINISTIC:
-            print("Yaaaaa")
             coefficients = self.__values[attr]
 
             objective_type = objective.get_objective_type()
@@ -620,15 +609,12 @@ class RCLSolve:
             if objective_type == ObjectiveType.MINIMIZATION:
                 gurobi_objective = GRB.MINIMIZE
 
-            # print("Info", coefficients)
-
             self.__model.setObjective(
                 gp.LinExpr(coefficients, self.__vars),
                 gurobi_objective)
             
         elif objective.get_stochasticity() == \
             Stochasticity.CVAR:
-            print("Yiiiiii")
             alpha = objective.get_percentage_of_scenarios() / 100.0
             tail_type = objective.get_tail_type()
             objective_type = objective.get_objective_type()
@@ -648,23 +634,12 @@ class RCLSolve:
                 sign_inverter = 1.0
             
             for j in range(no_of_scenarios):
-                print("j", j)
-                print("scen", no_of_scenarios)
-                print("size", len(self.__scenarios))
-                print("size", len(self.__scenarios[attr]))
-                print("at", attr)
-                # print(self.__scenarios[attr])
                 scenario_coeffs = []
                 for idx in range(self.__no_of_vars):
                     # Pega o valor do Ganho/Perda no cenário j
-                    try:
-                        value_j = self.__scenarios[attr][idx][j]
-                        # Multiplica pelo Inversor: L(x) = sign_inverter * Ganho
-                        scenario_coeffs.append(value_j * sign_inverter)
-                    except:
-                        print(len(self.__scenarios[attr][idx]))
-                        print(self.__scenarios[attr][idx][-1])
-                        raise Exception("THings exploded")
+                    value_j = self.__scenarios[attr][idx][j]
+                    # Multiplica pelo Inversor: L(x) = sign_inverter * Ganho
+                    scenario_coeffs.append(value_j * sign_inverter)
                 
                 # Expressao Linear: L(x)_j = SUM(value_j * sign_inverter * x_i)
                 Lx_j = gp.LinExpr(scenario_coeffs, self.__vars)
@@ -694,7 +669,6 @@ class RCLSolve:
 
 
         else:
-            print("Yeeeeee")
             if no_of_scenarios <= \
                 self.__feasible_no_of_scenarios_to_store:
                 for idx in range(self.__no_of_vars):
@@ -729,8 +703,6 @@ class RCLSolve:
             if objective_type == ObjectiveType.MINIMIZATION:
                 gurobi_objective = GRB.MINIMIZE
 
-            # print("Info", coefficients)
-
             self.__model.setObjective(
                 gp.LinExpr(coefficients, self.__vars),
                 gurobi_objective)
@@ -758,15 +730,12 @@ class RCLSolve:
         
 
     def __get_package(self):
-        print("Packagingmmmmmm")
         self.__metrics.start_optimizer()
         self.__model.optimize()
         self.__metrics.end_optimizer()
         package_dict = {}
         idx = 0
         try:
-            print(len(self.__vars))
-            # print("Get package", self._vars)
             for var in self.__vars:
                 if var.x > 0:
                     package_dict[
@@ -798,15 +767,12 @@ class RCLSolve:
         if package_with_indices is None:
             return 0
         attr = self.__query.get_objective().get_attribute_name()
-        print('Calculating objective value for attribute:', attr)
         if no_of_scenarios < \
             self.__feasible_no_of_scenarios_to_store:
             sum = 0
             for idx in package_with_indices:
                 sum += np.average(self.__scenarios[attr][idx]) * \
                     package_with_indices[idx]
-                print('Index in package:', idx)
-                print('Avg. Value:', np.average(self.__scenarios[attr][idx]))
             return sum
         
         sum = 0
@@ -1097,7 +1063,6 @@ class RCLSolve:
             print('CVaR mid thresholds:', cvar_mid_thresholds)
 
             if not is_model_setup:
-                print("Ameixas")
                 self.__model_setup(
                     no_of_scenarios=no_of_scenarios,
                     no_of_scenarios_to_consider=\
@@ -1253,7 +1218,6 @@ class RCLSolve:
                 )
             
             if not is_model_setup:
-                print("Banana")
                 self.__model_setup(
                     no_of_scenarios=no_of_scenarios,
                     no_of_scenarios_to_consider=\
@@ -1509,14 +1473,12 @@ class RCLSolve:
         unacceptable_diff = True
 
         while unacceptable_diff:
-            print("Caqui")
             self.__model_setup(
                 no_of_scenarios=no_of_scenarios,
                 no_of_scenarios_to_consider=[],
                 probabilistically_constrained=False
             )
 
-            print("Yaaay")
             probabilistically_unconstrained_package = \
                 self.__get_package()
             print('Probabilistically unconstrained package:',
@@ -1540,7 +1502,6 @@ class RCLSolve:
                 objective_upper_bound = validation_objective_value
                 break
             no_of_scenarios *= 2
-            print("Scenarios", no_of_scenarios)
         
         print('Objective value upper bound:',
               objective_upper_bound)
@@ -1702,8 +1663,6 @@ class RCLSolve:
         results = []
         for id in package_dict:
             attr = self.__get_attributes(id)
-            print("Attr: ", attr)
-            print("Pack: ", package_dict[id])
             # raise
             results.append((attr, package_dict[id]))
         return results
