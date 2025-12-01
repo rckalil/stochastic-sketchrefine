@@ -142,7 +142,7 @@ end
 function time_exp()
     
     path = "Data/portfolio.csv"
-    n_sim = 1
+    n_sim = 100
     m_time = 7
     num = 10
 
@@ -161,7 +161,7 @@ function time_exp()
     clock = []
 
     for i in 1:2
-        m_time = i*2
+        m_time = i*5
         factor = assets*m_time
         relative_losses = simulate(actions, n_sim, m_time)
         println(size(relative_losses))
