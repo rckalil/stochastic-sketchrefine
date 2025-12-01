@@ -16,12 +16,12 @@ if __name__ == '__main__':
                       "SUCH THAT\n",
                       "SUM(Price) <= 500 AND\n",
                       "LOG RISK BUDGET\n",
-                      "MAXIMIZE CVAR SUM(Gain)"]
+                      "MAXIMIZE EXPECTED SUM(Gain)"]
                     #   "MAXIMIZE EXPECTED SUM(Gain)"
 
     SeedManager.reinitialize_seed()
 
-    for days in range(5, 10, 5):
+    for days in range(5, 15, 5):
         print("Berinjela")
         print('Hold assets up to ', days, " days.")
         formatted_query = query_template[1] % str(days)
@@ -56,10 +56,14 @@ if __name__ == '__main__':
         rclsolveMetrics.log()
         end_time = time.time()
         
-        if package_dict == None: break
+        if package_dict == None:
+            with open("tr_rcl.txt", "a") as f:
+                f.write(f"{days},{end_time - start_time}\n")
+                f.write(f"Objective value: None\n")
+            break
         print("Done with: ", days)
         with open("tr_rcl.txt", "a") as f:
             f.write(f"{days},{end_time - start_time}\n")
             for line in package_dict: f.write(f"{line}\n")
             f.write(f"Objective value: {objective_value}\n")
-        
+    print("No answer")

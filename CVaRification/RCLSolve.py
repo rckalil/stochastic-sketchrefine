@@ -228,47 +228,79 @@ class RCLSolve:
             gurobi_inequality, sum_limit
         )
     
+
+    # Assumindo que LogisticConstraint, RelationalOperators, etc., estao definidos
+    # Assumindo que self.__prices contem o preco de cada tupla, indexado por idx.
+
     def __add_logistic_constraint_to_model(
         self, logistic_constraint: LogisticConstraint
     ):
-        print("Adding logistic constraint to model, yaaay")
-        # raise NotImplementedError("LogisticConstraint addition not implemented yet.")
+        print("Adding RBP Logistic Constraint using Gurobi GenExpr.")
         
+        # Restrições fixas
         attribute = logistic_constraint.get_attribute_name()
-        gurobi_inequality = \
-            self.__get_gurobi_inequality(
-                logistic_constraint.get_inequality_sign())
+        gurobi_inequality = self.__get_gurobi_inequality(
+            logistic_constraint.get_inequality_sign())
         sum_limit = logistic_constraint.get_sum_limit()
         
-        # self.__model.addLConstr(
-        #     gp.LinExpr(self.__values[attribute], self.__vars),
-        #     gurobi_inequality, sum_limit
-        # )
-
-        print("Sign: ", gurobi_inequality)
-        linear_sum_expr = gp.LinExpr(self.__values[attribute], self.__vars)
-        if gurobi_inequality == GRB.GREATER_EQUAL:
-            s = self.__model.addVar(lb=1e-6, name=f"{attribute}_sum_support") # Inferior bound is above zero
-            z = self.__model.addVar(name=f"{attribute}_log_support")
-
-            self.__model.addConstr(
-                s == linear_sum_expr,
-                name=f"{attribute}_sum_definition"
-            )
-
-            self.__model.addGenConstrLog(s, z, name=f"{attribute}_log_condition")
-
-            self.__model.addLConstr(
-                z,
-                gp.GRB.GREATER_EQUAL,
-                sum_limit, 
-                name=f"{attribute}_log_bound"
-            )
-
-            self.__model.Params.NonConvex = 2
-        else:
+        if gurobi_inequality != GRB.GREATER_EQUAL:
             raise NotImplementedError("LogisticConstraint only implemented for >= sign.")
 
+        num_assets = self.__no_of_vars 
+        print("Assets: ", num_assets)
+        # raise Exception("Assets")
+        if num_assets == 0:
+            return
+        
+        # 1. PESOS RBP (Risk Parity: B_i = 1/n)
+        # Note: O peso deve ser o mesmo para todos os ativos no Risk Parity.
+        B_weights = [1.0 / num_assets] * num_assets
+        
+        # 2. VARIÁVEIS AUXILIARES LOGARÍTMICAS (z_i = log(v_i))
+        # z_vars: Vetor auxiliar para armazenar log(exposicao nominal v_i).
+        # O limite inferior deve ser -infinito para acomodar log(x) onde x pode ser pequeno.
+        z_vars = self.__model.addVars(num_assets, lb=-GRB.INFINITY, name="log_v_aux")
+        
+        # 3. EXPRESSÃO RBP LINEAR FINAL: SUM(B_i * z_i)
+        rbp_log_sum_expression = gp.LinExpr()
+
+        # 4. ITERAR SOBRE CADA ATIVO (i) e CRIAR O LINK NÃO-LINEAR
+        for i in range(num_assets):
+            x_i = self.__vars[i] # Variável de decisão (Multiplicidade)
+            z_i = z_vars[i]      # Variável auxiliar (z_i = log(v_i))
+            B_i = B_weights[i]   # Peso RBP (1/n)
+
+            # A exposição nominal v_i é o produto: Multiplicidade * Preço.
+            # v_i = x_i * Price_i.
+            
+            # Como o Gurobi addGenConstrLog exige uma variável de Gurobi no primeiro argumento,
+            # precisamos de uma variável auxiliar e_i para a exposição nominal (x_i * Price_i).
+            
+            # 4a. Crie a variável auxiliar para a exposição nominal (e_i)
+            # e_i representa v_i (Exposição nominal)
+            e_i = self.__model.addVar(lb=1e-6, name=f"nominal_exp_{i}") 
+            
+            # 4b. Restrição Linear: Defina a exposição nominal (e_i = x_i * Price_i)
+            # Assumindo que self.__values['price'] contém o preco P_i para cada tupla i.
+            price_i = self.__values['price'][i] 
+            self.__model.addConstr(e_i == price_i * x_i, name=f"exp_link_{i}")
+            
+            # 4c. Link Não-Linear: Adicione a restrição logarítmica (z_i = log(e_i))
+            # O Gurobi usará essa restrição para forçar o mapeamento z_i -> log(e_i).
+            self.__model.addGenConstrLog(e_i, z_i, name=f"log_map_{i}")
+            
+            # 4d. Adicionar a contribuição ponderada (B_i * z_i) ao somatório RBP
+            rbp_log_sum_expression += B_i * z_i
+
+        # 5. Adicionar a Restrição RBP final: SUM(B_i * log(v_i)) >= 0
+        self.__model.addConstr(
+            rbp_log_sum_expression >= sum_limit, 
+            name="rbp_log_parity_constraint"
+        )
+
+        # 6. CONFIGURAÇÃO DE NÃO-LINEARIDADE
+        # Essencial para dizer ao Gurobi para aceitar as restrições addGenConstrLog.
+        self.__model.Params.NonConvex = 2
 
     def __add_feasible_no_of_scenarios(self, attribute: str):
         self.__scenarios[attribute] = \
