@@ -241,22 +241,30 @@ class RCLSolve:
         
         attribute = logistic_constraint.get_attribute_name()
         sum_limit = logistic_constraint.get_sum_limit()
-        linear_sum_expr = gp.LinExpr(self.__values[attribute], self.__vars)
+        n = len(self.__vars)
+        z_vars = []
+        # u = self.__model.addVar(name=f"{attribute}_sum_support")
+
+        b_weigth = [1/n]*n
+
+        for idx in range(n):
+            s = self.__model.addVar(name=f"{attribute}_{idx}_prod_support")
+            z = self.__model.addVar(name=f"{attribute}_{idx}_log_support")
+            # linear_prod_expr = gp.LinExpr([self.__values[attribute][idx]], [self.__vars[idx]])
+            linear_prod_expr = self.__values[attribute][idx] * self.__vars[idx]
+            
+            self.__model.addConstr(
+                s == linear_prod_expr,
+                name=f"{attribute}_prod_definition"
+            )
+
+            self.__model.addGenConstrLog(s, z, name=f"{attribute}_log_condition")
+            z_vars.append(z)
         
-
-
-        s = self.__model.addVar(lb=1e-6, name=f"{attribute}_sum_support") # Inferior bound is above zero
-        z = self.__model.addVar(name=f"{attribute}_log_support")
-
-        self.__model.addConstr(
-            s == linear_sum_expr,
-            name=f"{attribute}_sum_definition"
-        )
-
-        self.__model.addGenConstrLog(s, z, name=f"{attribute}_log_condition")
+        linear_sum_expr = gp.LinExpr(b_weigth, z_vars)
 
         self.__model.addLConstr(
-            z,
+            linear_sum_expr,
             gp.GRB.GREATER_EQUAL,
             sum_limit, 
             name=f"{attribute}_log_bound"

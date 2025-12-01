@@ -27,6 +27,10 @@ class LogisticConstraint(Constraint):
         """Indica que esta é uma restrição do tipo determinística (para o parser)."""
         return True
 
+    def is_deterministic_constraint(self) -> bool:
+        """Indica que esta é uma restrição do tipo determinística (para o parser)."""
+        return True
+
     def is_inequality_sign_set(self) -> bool:
         """O sinal é fixo (>=), então é sempre True."""
         return self.__is_inequality_sign_set
