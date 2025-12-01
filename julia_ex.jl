@@ -160,47 +160,50 @@ function time_exp()
     
     clock = []
 
-    for i in 1:2
-        m_time = i*5
-        factor = assets*m_time
-        relative_losses = simulate(actions, n_sim, m_time)
-        println(size(relative_losses))
-        println("Starting optimization")
-        start = time()
-        status, w = call_optimizer(relative_losses)
-        finish = time()
-        run_time = finish-start
-        # println(run_time)
-        push!(time_results, (m_time, run_time))
-        if !status
-            println(size(w))
-            q = get_int(w, factor)
-            pack = package(q, actions, m_time)
-            final = top(pack, num)
-            # println("The package to be chosen is ")
-            # println(final)
-            final_df = DataFrame(final, package_cols)
-            insertcols!(final_df, 1, :m_time => m_time)
-            
-            if isempty(package_results)
-                package_results = final_df
-            else
-                append!(package_results, final_df)
+    for c in 1:4
+        n_sim = 50*c
+        for i in 1:4
+            m_time = i*5
+            factor = assets*m_time
+            relative_losses = simulate(actions, n_sim, m_time)
+            println(size(relative_losses))
+            println("Starting optimization")
+            start = time()
+            status, w = call_optimizer(relative_losses)
+            finish = time()
+            run_time = finish-start
+            # println(run_time)
+            push!(time_results, (m_time, run_time))
+            if !status
+                println(size(w))
+                q = get_int(w, factor)
+                pack = package(q, actions, m_time)
+                final = top(pack, num)
+                # println("The package to be chosen is ")
+                # println(final)
+                final_df = DataFrame(final, package_cols)
+                insertcols!(final_df, 1, :m_time => m_time)
+                
+                if isempty(package_results)
+                    package_results = final_df
+                else
+                    append!(package_results, final_df)
+                end
             end
-        end
-        # finish = time()
+            # finish = time()
+            
+            # println("Total time: ")
+            # println(run_time)
+            clock = append!(clock, run_time)
+
+            # --- Salvamento Final ---
         
-        # println("Total time: ")
-        # println(run_time)
-        clock = append!(clock, run_time)
+            # 1. Salvar os tempos de execução
+            record_time(m_time, run_time, n_sim)
 
-        # --- Salvamento Final ---
-    
-        # 1. Salvar os tempos de execução
-        record_time(m_time, run_time, n_sim)
-
-        # 2. Salvar os pacotes escolhidos
-        reform(package_results, m_time, n_sim)
+            # 2. Salvar os pacotes escolhidos
+            reform(package_results, m_time, n_sim)
+        end
     end
     
     println(clock)
