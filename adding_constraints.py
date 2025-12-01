@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     SeedManager.reinitialize_seed()
 
-    for days in range(5, 35, 5):
+    for days in range(5, 10, 5):
         print("Berinjela")
         print('Hold assets up to ', days, " days.")
         formatted_query = query_template[1] % str(days)
@@ -41,7 +41,7 @@ if __name__ == '__main__':
         rclsolve = RCLSolve(
             query=query, linear_relaxation=False,
             dbInfo=PortfolioInfo, init_no_of_scenarios=100,
-            no_of_validation_scenarios=1000,
+            no_of_validation_scenarios=2000,
             approximation_bound=0.02,
             sampling_tolerance=0.01,
             bisection_threshold=0.01)

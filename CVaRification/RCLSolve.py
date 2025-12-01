@@ -580,25 +580,38 @@ class RCLSolve:
                 sign_inverter = 1.0
             
             for j in range(no_of_scenarios):
-                scenario_coeffs = []
-                for idx in range(self.__no_of_vars):
-                    # Pega o valor do Ganho/Perda no cenário j
-                    # print(self.__scenarios)
-                    value_j = self.__scenarios[attr][idx][j]
-                    # Multiplica pelo Inversor: L(x) = sign_inverter * Ganho
-                    scenario_coeffs.append(value_j * sign_inverter) 
-                
-                # Expressao Linear: L(x)_j = SUM(value_j * sign_inverter * x_i)
-                Lx_j = gp.LinExpr(scenario_coeffs, self.__vars)
-                
-                # Restrição R-U: y_j >= L(x)_j - t_var
-                # Reorganizada como: L(x)_j - t_var <= y_vars[j]
-                self.__model.addLConstr(
-                    Lx_j - t_var - y_vars[j],
-                    GRB.LESS_EQUAL, 0,
-                    name=f"cvar_ru_{j}"
-                )
-                self.__model.addLConstr(y_vars[j], GRB.GREATER_EQUAL, 0)
+                try:
+                    print("j", j)
+                    print("scen", no_of_scenarios)
+                    print("size", len(self.__scenarios))
+                    print("size", len(self.__scenarios[attr]))
+                    print("at", attr)
+                    # print(self.__scenarios[attr])
+                    scenario_coeffs = []
+                    for idx in range(self.__no_of_vars):
+                        # Pega o valor do Ganho/Perda no cenário j
+                        try:
+                            value_j = self.__scenarios[attr][idx][j]
+                            # Multiplica pelo Inversor: L(x) = sign_inverter * Ganho
+                            scenario_coeffs.append(value_j * sign_inverter)
+                        except:
+                            print(len(self.__scenarios[attr][idx]))
+                            print(self.__scenarios[attr][idx][-1])
+                            raise Exception("THings exploded")
+                    
+                    # Expressao Linear: L(x)_j = SUM(value_j * sign_inverter * x_i)
+                    Lx_j = gp.LinExpr(scenario_coeffs, self.__vars)
+                    
+                    # Restrição R-U: y_j >= L(x)_j - t_var
+                    # Reorganizada como: L(x)_j - t_var <= y_vars[j]
+                    self.__model.addLConstr(
+                        Lx_j - t_var - y_vars[j],
+                        GRB.LESS_EQUAL, 0,
+                        name=f"cvar_ru_{j}"
+                    )
+                    self.__model.addLConstr(y_vars[j], GRB.GREATER_EQUAL, 0)
+                except:
+                    break
             
             list_of_y_vars = list(y_vars.values())
             objective_expression = t_var
