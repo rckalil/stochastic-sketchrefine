@@ -38,6 +38,7 @@ function call_optimizer(relative_losses, alpha=0.9)
     println("Optimize")
     d = size(relative_losses, 1)
     B = ones(d)
+    println(size(B))
     status, w = cvar_rbp(B, alpha, relative_losses)
     # println("Status")
     # println(status)
@@ -69,6 +70,7 @@ function package(q, actions, m_time)
             # println("Cavalo")
             act = floor(Int, choice/m_time)
             time = choice - act*m_time + 1
+            println(choice, " ", act, " ", time)
             act += 1
             # println("Dia")
 
@@ -162,6 +164,7 @@ function time_exp()
         m_time = i*2
         factor = assets*m_time
         relative_losses = simulate(actions, n_sim, m_time)
+        println(size(relative_losses))
         println("Starting optimization")
         start = time()
         status, w = call_optimizer(relative_losses)
@@ -170,6 +173,7 @@ function time_exp()
         # println(run_time)
         push!(time_results, (m_time, run_time))
         if !status
+            println(size(w))
             q = get_int(w, factor)
             pack = package(q, actions, m_time)
             final = top(pack, num)
