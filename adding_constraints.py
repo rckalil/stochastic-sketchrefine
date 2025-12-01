@@ -60,8 +60,8 @@ if __name__ == '__main__':
 
     SeedManager.reinitialize_seed()
 
-    for days in range(5, 31, 5):
-        for sc in range(1000, 5001, 1000):
+    for days in range(5, 11, 5):
+        for sc in range(1000, 2001, 1000):
             # print("Berinjela")
             print('Hold assets up to ', days, " days.")
             formatted_query = query_template[1] % str(days)
@@ -82,10 +82,10 @@ if __name__ == '__main__':
             rclsolve = RCLSolve(
                 query=query, linear_relaxation=True,
                 dbInfo=PortfolioInfo, init_no_of_scenarios=sc,
-                no_of_validation_scenarios=2000,
+                no_of_validation_scenarios=5000,
                 approximation_bound=0.02,
-                sampling_tolerance=0.01,
-                bisection_threshold=0.01)
+                sampling_tolerance=0.001,
+                bisection_threshold=0.001)
             
             # rclsolve.__add_constraints_to_model
             # query.add_con
