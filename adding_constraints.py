@@ -16,7 +16,7 @@ if __name__ == '__main__':
                       "SUCH THAT\n",
                       "SUM(Price) <= 500 AND\n",
                       "LOG RISK BUDGET\n",
-                      "MAXIMIZE EXPECTED SUM(Gain)"]
+                      "MAXIMIZE CVAR SUM(Gain)"]
                     #   "MAXIMIZE EXPECTED SUM(Gain)"
 
     SeedManager.reinitialize_seed()
