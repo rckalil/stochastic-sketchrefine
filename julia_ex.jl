@@ -58,6 +58,9 @@ end
 
 function package(q, actions, m_time)
     # println("Arroz")
+    println(q)
+    println(actions)
+    println(m_time)
     d = size(q, 1)
     pack = zeros(0, 8)
     # println("Botão")

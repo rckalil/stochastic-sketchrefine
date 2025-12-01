@@ -14,14 +14,14 @@ if __name__ == '__main__':
     query_template = ["SELECT PACKAGE(*) AS P\n",
                       "FROM Stock_Investments_%s\n",
                       "SUCH THAT\n",
-                    #   "SUM(Price) <= 5000 AND\n",
+                    #   "SUM(Price) <= 500 AND\n",
                       "LOG RISK BUDGET\n",
                       "MAXIMIZE CVAR SUM(Gain)"]
                     #   "MAXIMIZE EXPECTED SUM(Gain)"
 
     SeedManager.reinitialize_seed()
 
-    for days in range(5, 15, 5):
+    for days in range(5, 9, 5):
         print("Berinjela")
         print('Hold assets up to ', days, " days.")
         formatted_query = query_template[1] % str(days)
