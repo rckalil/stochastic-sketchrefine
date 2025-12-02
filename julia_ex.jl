@@ -160,9 +160,9 @@ function time_exp()
     
     clock = []
 
-    for c in 1:2
+    for c in 1:1
         n_sim = 50*c
-        for i in 1:6
+        for i in 4:4
             m_time = i*5
             factor = assets*m_time
             relative_losses = simulate(actions, n_sim, m_time)
@@ -171,7 +171,7 @@ function time_exp()
             run_time = 0
             status = false
             w = []
-            for m in 1:10
+            for m in 1:1
                 start = time()
                 status, w = call_optimizer(relative_losses)
                 finish = time()
@@ -184,9 +184,10 @@ function time_exp()
                 println(size(w))
                 q = get_int(w, factor)
                 pack = package(q, actions, m_time)
-                final = top(pack, num)
-                # println("The package to be chosen is ")
-                # println(final)
+                # final = top(pack, num)
+                final = pack
+                println("The package to be chosen is ")
+                println(final)
                 final_df = DataFrame(final, package_cols)
                 insertcols!(final_df, 1, :m_time => m_time)
                 
@@ -241,7 +242,7 @@ function reform(data_list::DataFrame, days::Int, sc::Int, filepath::String="resu
 
     # 4. Ordenar e Selecionar o Top 10 (Decrescente)
     sort!(df, "quantity", rev=true)
-    df = df[1:min(10, nrow(df)), :] # Pega o top 10 ou o que estiver disponível
+    # df = df[1:min(10, nrow(df)), :] # Pega o top 10 ou o que estiver disponível
 
     # 5. Salvar em CSV
     

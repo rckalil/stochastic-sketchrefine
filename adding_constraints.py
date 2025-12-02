@@ -34,7 +34,7 @@ def reform(data_list: list, days, sc, filepath: str = "results"):
     df = df.sort_values(by=['Objective_Value'], ascending=False)
 
     # print(df)
-    df = df.head(10)
+    # df = df.head(10)
 
     # 4. Salvar em CSV
     if not os.path.exists(filepath):
@@ -60,8 +60,8 @@ if __name__ == '__main__':
 
     SeedManager.reinitialize_seed()
 
-    for days in range(5, 11, 5):
-        for sc in range(1000, 2001, 1000):
+    for days in range(15, 21, 5):
+        for sc in range(1000, 1001, 1000):
             # print("Berinjela")
             print('Hold assets up to ', days, " days.")
             formatted_query = query_template[1] % str(days)
