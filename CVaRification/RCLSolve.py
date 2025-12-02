@@ -12,7 +12,7 @@ from SeedManager.SeedManager import SeedManager
 from StochasticPackageQuery.Constraints.CVaRConstraint.CVaRConstraint import CVaRConstraint
 from StochasticPackageQuery.Constraints.VaRConstraint.VaRConstraint import VaRConstraint
 from StochasticPackageQuery.Constraints.DeterministicConstraint.DeterministicConstraint import DeterministicConstraint
-from StochasticPackageQuery.Constraints.LogisticConstraint.LogisticConstraint import LogisticConstraint
+from StochasticPackageQuery.Constraints.LogarithmConstraint.LogarithmConstraint import LogarithmConstraint
 from StochasticPackageQuery.Constraints.ExpectedSumConstraint.ExpectedSumConstraint import ExpectedSumConstraint
 from StochasticPackageQuery.Constraints.PackageSizeConstraint.PackageSizeConstraint import PackageSizeConstraint
 from StochasticPackageQuery.Objective.Objective import Objective
@@ -230,10 +230,10 @@ class RCLSolve:
 
     
     # def __add_logistic_constraint_to_model(
-    #     self, logistic_constraint: LogisticConstraint
+    #     self, logistic_constraint: LogarithmConstraint
     # ):
     #     print("Adding logistic constraint to model, yaaay")
-    #     # raise NotImplementedError("LogisticConstraint addition not implemented yet.")
+    #     # raise NotImplementedError("LogarithmConstraint addition not implemented yet.")
         
     #     attribute = logistic_constraint.get_attribute_name()
     #     gurobi_inequality = \
@@ -268,11 +268,11 @@ class RCLSolve:
 
     #         self.__model.Params.NonConvex = 2
     #     else:
-    #         raise NotImplementedError("LogisticConstraint only implemented for >= sign.")
+    #         raise NotImplementedError("LogarithmConstraint only implemented for >= sign.")
 
     
     def __add_logistic_constraint_to_model(
-        self, logistic_constraint: LogisticConstraint
+        self, logistic_constraint: LogarithmConstraint
     ):
         print("Adding logistic constraint to model, yaaay")
 
@@ -280,7 +280,7 @@ class RCLSolve:
             self.__get_gurobi_inequality(
                 logistic_constraint.get_inequality_sign())
         if gurobi_inequality != GRB.GREATER_EQUAL:
-            raise NotImplementedError("LogisticConstraint only implemented for >= sign.")
+            raise NotImplementedError("LogarithmConstraint only implemented for >= sign.")
         
         attribute = logistic_constraint.get_attribute_name()
         sum_limit = logistic_constraint.get_sum_limit()

@@ -1,6 +1,6 @@
 from StochasticPackageQuery.Parser.State.AddDeterministicConstraintState import AddDeterministicConstraintState
 from StochasticPackageQuery.Parser.State.AddExpectedSumConstraintState import AddExpectedSumConstraintState
-from StochasticPackageQuery.Parser.State.AddLogisticConstraintState import AddLogisticConstraintState
+from StochasticPackageQuery.Parser.State.AddLogarithmConstraintState import AddLogarithmConstraintState
 from StochasticPackageQuery.Parser.State.AddPackageSizeConstraintState import AddPackageSizeConstraintState
 from StochasticPackageQuery.Parser.State.AddRepeatConstraintState import AddRepeatConstraintState
 from StochasticPackageQuery.Parser.State.BasePredicateEditingState import BasePredicateEditingState
@@ -447,7 +447,7 @@ class Parser:
             Transition(' ', constraint_sum_limit_parsed_state)
         )
 
-        log_keyword_detected_state = AddLogisticConstraintState() # Novo estado que você criará
+        log_keyword_detected_state = AddLogarithmConstraintState() # Novo estado que você criará
         ready_for_constraints_state.add_transition(
             Transition('l', log_keyword_detected_state)
         )

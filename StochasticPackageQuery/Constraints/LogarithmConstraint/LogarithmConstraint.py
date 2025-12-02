@@ -2,7 +2,7 @@ from StochasticPackageQuery.Constraints.Constraint import Constraint
 from Utils.RelationalOperators import RelationalOperators
 
 
-class LogisticConstraint(Constraint):
+class LogarithmConstraint(Constraint):
     """
     Representa a restrição logarítmica do problema Risk Budgeting Portfolio (RBP),
     formulada como: SUM(B_i * log(v_i)) >= 0.
@@ -23,7 +23,7 @@ class LogisticConstraint(Constraint):
         # O nome do atributo é o keyword completo (LOG RISK BUDGET) ou a função.
         self.__attribute_name = 'price'
 
-    def is_logistic_constraint(self) -> bool:
+    def is_logarithm_constraint(self) -> bool:
         """Indica que esta é uma restrição do tipo determinística (para o parser)."""
         return True
 
@@ -51,13 +51,13 @@ class LogisticConstraint(Constraint):
     # mas são definidos para compatibilidade:
     
     def set_inequality_sign(self, char: chr):
-        raise NotImplementedError("Inequality sign for LogisticConstraint is fixed (>=) and cannot be changed.")
+        raise NotImplementedError("Inequality sign for LogarithmConstraint is fixed (>=) and cannot be changed.")
 
     def set_sum_limit(self, sum_limit: float):
-        raise NotImplementedError("Sum limit for LogisticConstraint is fixed (0.0) and cannot be changed.")
+        raise NotImplementedError("Sum limit for LogarithmConstraint is fixed (0.0) and cannot be changed.")
 
     def add_character_to_sum_limit(self, char: chr):
-        raise NotImplementedError("Sum limit for LogisticConstraint is fixed (0.0) and cannot be built iteratively.")
+        raise NotImplementedError("Sum limit for LogarithmConstraint is fixed (0.0) and cannot be built iteratively.")
 
     def set_attribute_name(self, attribute_name: str):
         """Permite a redefinição do nome, se necessário."""

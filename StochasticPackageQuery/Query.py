@@ -2,7 +2,7 @@ from StochasticPackageQuery.Constraints.Constraint import Constraint
 from StochasticPackageQuery.Constraints.RepeatConstraint.RepeatConstraint import RepeatConstraint
 from StochasticPackageQuery.Constraints.PackageSizeConstraint.PackageSizeConstraint import PackageSizeConstraint
 from StochasticPackageQuery.Constraints.DeterministicConstraint.DeterministicConstraint import DeterministicConstraint
-from StochasticPackageQuery.Constraints.LogisticConstraint.LogisticConstraint import LogisticConstraint
+from StochasticPackageQuery.Constraints.LogarithmConstraint.LogarithmConstraint import LogarithmConstraint
 from StochasticPackageQuery.Constraints.ExpectedSumConstraint.ExpectedSumConstraint import ExpectedSumConstraint
 from StochasticPackageQuery.Constraints.VaRConstraint.VaRConstraint import VaRConstraint
 from StochasticPackageQuery.Constraints.CVaRConstraint.CVaRConstraint import CVaRConstraint
@@ -91,8 +91,8 @@ class Query:
     def add_expected_sum_constraint(self):
         self.__constraints.append(ExpectedSumConstraint())
 
-    def add_logistic_constraint(self):
-        self.__constraints.append(LogisticConstraint())
+    def add_logarithm_constraint(self):
+        self.__constraints.append(LogarithmConstraint())
 
     def add_var_constraint(self):
         self.__constraints.append(VaRConstraint())
@@ -103,7 +103,7 @@ class Query:
     def add_character_to_attribute_name(self, char: chr):
         if len(self.__constraints) < 1 or (not self.__constraints[-1].is_deterministic_constraint() and
                                            not self.__constraints[-1].is_expected_sum_constraint() and
-                                           not self.__constraints[-1].is_logistic_constraint() and
+                                           not self.__constraints[-1].is_logarithm_constraint() and
                                            not self.__constraints[-1].is_var_constraint()):
             raise Exception
         self.__constraints[-1].add_character_to_attribute_name(char)
@@ -112,7 +112,7 @@ class Query:
         if len(self.__constraints) < 1 or (not self.__constraints[-1].is_package_size_constraint() and
                                            not self.__constraints[-1].is_deterministic_constraint() and
                                            not self.__constraints[-1].is_expected_sum_constraint() and
-                                           not self.__constraints[-1].is_logistic_constraint() and
+                                           not self.__constraints[-1].is_logarithm_constraint() and
                                            not self.__constraints[-1].is_var_constraint()):
             raise Exception
         self.__constraints[-1].set_inequality_sign(char)
@@ -120,7 +120,7 @@ class Query:
     def add_character_to_constraint_sum_limit(self, char: chr):
         if len(self.__constraints) < 1 or (not self.__constraints[-1].is_deterministic_constraint() and
                                            not self.__constraints[-1].is_expected_sum_constraint() and
-                                           not self.__constraints[-1].is_logistic_constraint() and
+                                           not self.__constraints[-1].is_logarithm_constraint() and
                                            not self.__constraints[-1].is_var_constraint()):
             raise Exception
         self.__constraints[-1].add_character_to_sum_limit(char)

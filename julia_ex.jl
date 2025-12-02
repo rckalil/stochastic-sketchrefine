@@ -160,18 +160,24 @@ function time_exp()
     
     clock = []
 
-    for c in 1:4
+    for c in 1:2
         n_sim = 50*c
-        for i in 1:4
+        for i in 1:6
             m_time = i*5
             factor = assets*m_time
             relative_losses = simulate(actions, n_sim, m_time)
             println(size(relative_losses))
             println("Starting optimization")
-            start = time()
-            status, w = call_optimizer(relative_losses)
-            finish = time()
-            run_time = finish-start
+            run_time = 0
+            status = false
+            w = []
+            for m in 1:10
+                start = time()
+                status, w = call_optimizer(relative_losses)
+                finish = time()
+                run_time += finish-start
+            end
+            run_time /= 10
             # println(run_time)
             push!(time_results, (m_time, run_time))
             if !status
