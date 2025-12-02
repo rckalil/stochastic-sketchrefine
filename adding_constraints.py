@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
     SeedManager.reinitialize_seed()
 
-    for days in range(15, 21, 5):
+    for days in range(5, 6, 5):
         for sc in range(1000, 1001, 1000):
             # print("Berinjela")
             print('Hold assets up to ', days, " days.")

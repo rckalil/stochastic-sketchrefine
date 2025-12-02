@@ -79,7 +79,7 @@ function package(q, actions, m_time)
             identifier = actions[act, 5]
             ticker = actions[act, 1]
             # println("Estanho")
-            sell_after = time
+            sell_after = time-1
             price = actions[act, 2]
             volatility = actions[act, 4]
             volatility_coef = 1.0
@@ -162,7 +162,7 @@ function time_exp()
 
     for c in 1:1
         n_sim = 50*c
-        for i in 4:4
+        for i in 1:1
             m_time = i*5
             factor = assets*m_time
             relative_losses = simulate(actions, n_sim, m_time)
